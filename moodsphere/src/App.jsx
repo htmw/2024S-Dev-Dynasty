@@ -1,27 +1,22 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
-import img from "../src/logo.png"
-
+import React, {useState, useEffect} from 'react';
+import HomePage from './components/homePage/homePage.jsx';
+import Signup from './userAuth/signUp.jsx';
+import Login from './userAuth/login.jsx';
+import { BrowserRouter as Router} from 'react-router-dom';
+import {Routes, Route} from 'react-router-dom';
+import LandingPage from './components/LandingPage/landingPage.jsx';
 function App() {
-  const [count, setCount] = useState(0)
-  return (
-    <>
-      <div>
-      <a href="#" target="_blank">
-  <img 
-    src={img} 
-    className="logo" 
-    alt="my logo"
-    style={{ width: '200px', height: 'auto' }} 
-  />
-</a>
-      </div>
-      <h1>MoodSphere</h1>
-      <h3>Created By DevDynasty</h3>
-    </>
-  )
-}
 
-export default App
+  return (
+    <Router>                         
+            <Routes>
+              <Route path="/" element={<LandingPage/>}/>
+               <Route path="/signup" element={<Signup/>}/>
+               <Route path="/login" element={<Login/>}/>
+               <Route path="/home" element={<HomePage/>}/>
+            </Routes>
+    </Router>
+  );
+}
+ 
+export default App;
