@@ -11,6 +11,8 @@ import EmojiEmotionsIcon from '@mui/icons-material/EmojiEmotions';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import Bubble from '../LandingPage/homebubble';
+import { logout } from '../../userAuth/firebase';
+
 const HomePage = () => {
     const navigate = useNavigate();
     
@@ -23,6 +25,11 @@ const HomePage = () => {
     const handleClose = () => {
       setAnchorEl(null);
     };
+
+    const handleLogout = () => {
+        logout();
+        navigate('/');
+    }
     // AppBar styles
     const appBarStyle = {
         backgroundColor: '#121212', // Dark background
@@ -85,7 +92,7 @@ const HomePage = () => {
                     >
                         <MenuItem onClick={handleClose}>Profile</MenuItem>
                         <MenuItem onClick={handleClose}>My account</MenuItem>
-                        <MenuItem onClick={handleClose}>Logout</MenuItem>
+                        <MenuItem onClick={handleLogout}>Logout</MenuItem>
                     </Menu>
 
                     <Typography variant="h6" sx={{ flexGrow: 1, color: '#b71c1c' }}>
