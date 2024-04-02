@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import HomePage from './components/homePage/homePage.jsx';
+import Artist from './components/homePage/artist.jsx';
 import Signup from './userAuth/signUp.jsx';
 import Login from './userAuth/login.jsx';
 import { BrowserRouter as Router} from 'react-router-dom';
@@ -14,6 +15,7 @@ function App() {
                <Route path="/" element={<LandingPage/>}/>
                <Route path="/signup" element={<Signup/>}/>
                <Route path="/login" element={<Login/>}/>
+               <Route path="/artist" element={<Artist/>}/>
             </Routes>
     </Router>
   );
