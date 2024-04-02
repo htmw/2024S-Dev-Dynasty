@@ -3,6 +3,8 @@ import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from './firebase';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { Typography, Container, TextField, Button, Link, AppBar, Toolbar, IconButton } from '@mui/material';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import Bubble from '../components/LandingPage/homebubble';
 
 const Login = () => {
     const navigate = useNavigate();
@@ -26,21 +28,22 @@ const Login = () => {
 
     return (
         <>
-            <AppBar>
+            <AppBar sx={{ bgcolor: 'black' }}>
                 <Toolbar>
-                    <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+                    <Typography variant="h6" component="div" sx={{ flexGrow: 1, color: 'white' }}>
                         Moodsphere
                     </Typography>
-                    <Button edge="start" color="inherit" aria-label="back" onClick={() => navigate(-1)}>
-                      Back
-                    </Button>
+                    <IconButton edge="start" color="inherit" aria-label="back" onClick={() => navigate(-1)}>
+                        <ArrowBackIcon /> Back
+                    </IconButton>
                 </Toolbar>
             </AppBar>
-            <Container sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: 'calc(100vh - 64px)' }}>
-                <Typography variant="h3" align="center" gutterBottom>
-                    Moodsphere
+            <Container sx={{ position: 'relative', height: 'calc(100vh - 64px)', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', zIndex: 0 }}>
+                <Bubble style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', zIndex: 0 }} />
+                <Typography variant="h3" align="center" gutterBottom sx={{ zIndex: 1, color: 'white' }}>
+                    User Login
                 </Typography>
-                <form onSubmit={onLogin} style={{ width: '100%', maxWidth: '400px' }}>
+                <form onSubmit={onLogin} style={{ width: '100%', maxWidth: '400px', position: 'relative', zIndex: 1 }}>
                     <TextField
                         id="email-address"
                         name="email"
@@ -52,7 +55,36 @@ const Login = () => {
                         fullWidth
                         margin="normal"
                         variant="outlined"
-                        color="primary"
+                        color="error"
+                        InputLabelProps={{
+                            style: { color: 'red', fontWeight: 'bold' }
+                        }}
+                        sx={{
+                            '& .MuiOutlinedInput-root': {
+                                '& fieldset': {
+                                    borderColor: 'red',
+                                },
+                                '&:hover fieldset': {
+                                    borderColor: '#CC0000',
+                                },
+                                '&.Mui-focused fieldset': {
+                                    borderColor: '#CC0000', 
+                                },
+                                '& input': {
+                                    color: 'white', 
+                                    backgroundColor: 'black', 
+                                    '&:-webkit-autofill': {
+                                        backgroundColor: 'black !important', 
+                                    },
+                                },
+                                '& input::placeholder': {
+                                    color: 'white', 
+                                },
+                                '& input:-ms-input-placeholder': {
+                                    color: 'white', 
+                                },
+                            },
+                        }}
                     />
                     <TextField
                         id="password"
@@ -65,15 +97,44 @@ const Login = () => {
                         fullWidth
                         margin="normal"
                         variant="outlined"
-                        color="primary"
+                        color="error"
+                        InputLabelProps={{
+                            style: { color: 'red', fontWeight: 'bold' }
+                        }}
+                        sx={{
+                            '& .MuiOutlinedInput-root': {
+                                '& fieldset': {
+                                    borderColor: 'red',
+                                },
+                                '&:hover fieldset': {
+                                    borderColor: '#CC0000',
+                                },
+                                '&.Mui-focused fieldset': {
+                                    borderColor: '#CC0000', 
+                                },
+                                '& input': {
+                                    color: 'white', 
+                                    backgroundColor: 'black', 
+                                    '&:-webkit-autofill': {
+                                        backgroundColor: 'black !important', 
+                                    },
+                                },
+                                '& input::placeholder': {
+                                    color: 'white', 
+                                },
+                                '& input:-ms-input-placeholder': {
+                                    color: 'white', 
+                                },
+                            },
+                        }}
                     />
-                    <Button type="submit" variant="contained" color="primary" fullWidth>
+                    <Button type="submit" variant="contained" color="error" fullWidth sx={{ mt: 2 }}>
                         Login
                     </Button>
+                    <Typography variant="body1" align="center" sx={{ color: 'white', mt: 2 }}>
+                        Don't have an account? <Link component={NavLink} to="/signup" sx={{ color: 'red' }}>Sign up</Link>
+                    </Typography>
                 </form>
-                <Typography variant="body1" align="center" gutterBottom>
-                    No account yet? <Link component={NavLink} to="/signup">Sign up</Link>
-                </Typography>
             </Container>
         </>
     );
