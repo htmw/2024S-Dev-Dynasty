@@ -2,12 +2,27 @@ import React from 'react';
 import { AppBar, Toolbar, Typography, Button, Container, CssBaseline } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import Bubble from './bubble';
+import { signInWithGoogle } from '../../userAuth/firebase'
+import GoogleIcon from '@mui/icons-material/Google';
+import EmailIcon from '@mui/icons-material/Email';
+import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 
 const LandingPage = () => {
   const navigate = useNavigate();
   const handleGetStartedClick = () => {
-    navigate('/login');
+    navigate('/signup');
   };
+  const googlePopup = () => { 
+    signInWithGoogle().then((result) => {
+      console.log(result);
+      navigate('/home');
+    }).catch((error) => {
+      console.log(error);
+    });
+  }
+  const loginWithEmail = () => {
+    navigate('/login');
+  }
 
   return (
     <>
@@ -49,13 +64,13 @@ const LandingPage = () => {
             </Typography>
             <div style={{ display: 'flex', justifyContent: 'center', gap: '16px', marginBottom: '16px' }}>
               <Button variant="contained" color="error" size="small" onClick={handleGetStartedClick} style={{ minWidth: '150px' }}>
-                Get Started
+              <PlayArrowIcon /> Get Started
               </Button>
-              <Button variant="contained" color="error" size="small" onClick={handleGetStartedClick} style={{ minWidth: '150px' }}>
-                Login With Google
+              <Button variant="contained" color="error" size="small" onClick={googlePopup} style={{ minWidth: '150px' }}>
+                <GoogleIcon sx={{marginRight:'10px'}}/>  Login/Sign Up With Google
               </Button>
-              <Button variant="contained" color="error" size="small" onClick={handleGetStartedClick} style={{ minWidth: '150px' }}>
-                Login With Email
+              <Button variant="contained" color="error" size="small" onClick={loginWithEmail} style={{ minWidth: '150px' }}>
+                <EmailIcon sx={{marginRight:'10px'}}/> Login With Email
               </Button>
             </div>
           </Container>

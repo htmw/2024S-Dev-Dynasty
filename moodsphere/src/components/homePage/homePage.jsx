@@ -1,28 +1,46 @@
-import React from 'react';
+import React,  { useRef, useState } from 'react';
 import { Box, Button, List, ListItem, ListItemIcon, ListItemText, Typography,AppBar,Toolbar, CssBaseline, Link, Divider,useTheme,IconButton,Avatar, Menu, MenuItem, TextField, InputAdornment } from '@mui/material';
 import HomeIcon from '@mui/icons-material/Home';
 import MenuIcon from '@mui/icons-material/Menu';
 import SearchIcon from '@mui/icons-material/Search';
 import LibraryMusicIcon from '@mui/icons-material/LibraryMusic';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import PhotoCameraIcon from '@mui/icons-material/PhotoCamera';
 import PersonSearchIcon from '@mui/icons-material/PersonSearch';
 import MoodIcon from '@mui/icons-material/Mood';
 import EmojiEmotionsIcon from '@mui/icons-material/EmojiEmotions';
-import { motion, AnimatePresence } from 'framer-motion';
+import { Modal, Backdrop, Fade, Paper } from '@mui/material';
+import CameraAltIcon from '@mui/icons-material/CameraAlt';
+import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
 import { useNavigate } from 'react-router-dom';
 import Bubble from '../LandingPage/homebubble';
 
 const HomePage = () => {
     const navigate = useNavigate();
-    
     const [anchorEl, setAnchorEl] = React.useState(null);
-
+    const [openModal, setOpenModal] = React.useState(false); 
     const handleMenu = (event) => {
       setAnchorEl(event.currentTarget);
     };
-
+    const fileInputRef = useRef(null);
+    const handleFileSelection = (event) => {
+     
+        const file = event.target.files[0];
+        if (file) {
+          console.log(file.name);
+        
+        }
+      };
+      
     const handleClose = () => {
       setAnchorEl(null);
+    };
+    const handleOpenModal = () => {
+        setOpenModal(true);
+    };
+
+    const handleCloseModal = () => {
+        setOpenModal(false);
     };
     // AppBar styles
     const appBarStyle = {
@@ -52,6 +70,7 @@ const HomePage = () => {
         { text: 'Find Artist By Artist', icon: <PersonSearchIcon />, onClick: () => navigate('/artist') },
         { text: 'Find Music By Mood', icon: <MoodIcon />, onClick: () => navigate('/mood') },
         { text: 'Mood Status', icon: <EmojiEmotionsIcon />, onClick: () => navigate('/status') },
+        { text: 'Upload Your Image', icon: <PhotoCameraIcon  />, onClick: handleOpenModal }
     ];
 
     return (       
@@ -106,11 +125,6 @@ const HomePage = () => {
                         ),
                       }}
                     />
-
-                    {/* <Button color="inherit" onClick={() => navigate(-1)}>
-                        Back
-                    </Button> */}
-
                     <IconButton
                       size="large"
                       edge="end"
@@ -141,7 +155,58 @@ const HomePage = () => {
                     borderRight: '1px solid #b71c1c',
                 }}
             >
-                
+                <Modal
+        aria-labelledby="transition-modal-title"
+        aria-describedby="transition-modal-description"
+        open={openModal}
+        onClose={handleCloseModal}
+        closeAfterTransition
+    >
+        <Fade in={openModal}>
+            <Paper elevation={3} sx={{ 
+            position: 'absolute', 
+            top: '50%', 
+            left: '50%', 
+            transform: 'translate(-50%, -50%)', 
+            width: 300, 
+            bgcolor: '#121212', // Black background
+            color: '#b71c1c', // Red text
+            boxShadow: 24, 
+            p: 4, 
+            display: 'flex', 
+            flexDirection: 'column', 
+            alignItems: 'center', 
+            gap: 2
+            }}>
+            <Typography variant="h6" component="h2" sx={{ color: 'white' }}>
+                Upload Your Image
+            </Typography>
+                <Button 
+                    startIcon={<CameraAltIcon sx={{ color: '#b71c1c' }} />} 
+                    sx={{ color: 'white' }}
+                >
+                    Camera
+                </Button>
+                <>
+
+  <input
+    type="file"
+    ref={fileInputRef}
+    style={{ display: 'none' }}
+    onChange={handleFileSelection}
+  />
+</>
+
+                <Button 
+                    startIcon={<InsertDriveFileIcon sx= {{ color: '#b71c1c' }} />}
+                    onClick={() => fileInputRef.current.click()}
+                    sx={{ color: 'white' }}
+                >
+                    Browse Files
+                </Button>
+            </Paper>
+        </Fade>
+    </Modal>
                 <List>
                     {menuItems.map((item, index) => (
                         <ListItem button key={index} onClick={item.onClick} sx={{ '&:hover': { bgcolor: '#757575' } }}>
@@ -158,14 +223,12 @@ const HomePage = () => {
                                 Legal
                             </Link>
                         </ListItem>
-                        {/* ...additional list items... */}
                     </List>
                     <Box px={2} py={1}>
                         <Link href="#" color="inherit" underline="hover">
                             Privacy Policy
                         </Link>
                     </Box>
-                    {/* Add more links or information as needed */}
                 </Box>
             </Box>
               
