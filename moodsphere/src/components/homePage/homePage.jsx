@@ -105,7 +105,7 @@ const HomePage = () => {
                     >
                         <MenuItem onClick={handleClose}>Profile</MenuItem>
                         <MenuItem onClick={handleClose}>My account</MenuItem>
-                        <MenuItem onClick={handleLogout}>Logout</MenuItem>
+                        <MenuItem onClick={handleClose}>Logout</MenuItem>
                     </Menu>
 
                     <Typography variant="h6" sx={{ flexGrow: 1, color: '#b71c1c' }}>
