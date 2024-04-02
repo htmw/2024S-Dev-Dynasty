@@ -11,6 +11,7 @@ import EmojiEmotionsIcon from '@mui/icons-material/EmojiEmotions';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import Bubble from '../LandingPage/homebubble';
+
 const HomePage = () => {
     const navigate = useNavigate();
     
