@@ -1,5 +1,6 @@
 import React from 'react';
 import HomePage from './components/homePage/homePage.jsx';
+import Artist from './components/homePage/artist.jsx';
 import Signup from './userAuth/signUp.jsx';
 import Login from './userAuth/login.jsx';
 import LandingPage from './components/LandingPage/landingPage.jsx';
@@ -27,6 +28,7 @@ function App() {
           )}
           <Route path="/signup" element={<Signup/>}/>
           <Route path="/login" element={<Login/>}/>
+          <Route path="/artist" element={<Artist/>}/>
         </Routes>
       </Router>
     </AuthProvider>
