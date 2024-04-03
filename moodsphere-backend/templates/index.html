@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emotion Detection</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        th, td {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h1>Emotion Detection</h1>
+    <form action="/predict" method="post" enctype="multipart/form-data">
+        <input type="file" name="file">
+        <button type="submit">Predict</button>
+    </form>
+    {% if prediction %}
+    <h2>Prediction: {{ prediction }}</h2>
+    <img src="data:image/png;base64,{{ image }}" alt="Uploaded Image">
+    {% endif %}
+    {% if recommended_songs %}
+    <h2>Recommended Songs</h2>
+    <table>
+        <tr>
+            <th>Name</th>
+            <th>Artist</th>
+            <th>Mood</th>
+            <th>Popularity</th>
+        </tr>
+        {% for song in recommended_songs %}
+        <tr>
+            <td>{{ song.name }}</td>
+            <td>{{ song.artist }}</td>
+            <td>{{ song.mood }}</td>
+            <td>{{ song.popularity }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% endif %}
+    {% if error %}
+    <h2>Error: {{ error }}</h2>
+    {% endif %}
+</body>
+</html>

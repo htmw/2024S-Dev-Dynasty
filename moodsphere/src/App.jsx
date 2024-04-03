@@ -1,24 +1,38 @@
-import React, {useState, useEffect} from 'react';
+import React from 'react';
 import HomePage from './components/homePage/homePage.jsx';
 import Artist from './components/homePage/artist.jsx';
 import Signup from './userAuth/signUp.jsx';
 import Login from './userAuth/login.jsx';
-import { BrowserRouter as Router} from 'react-router-dom';
-import {Routes, Route} from 'react-router-dom';
 import LandingPage from './components/LandingPage/landingPage.jsx';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { auth } from './userAuth/firebase.js';
+import { AuthProvider } from './userAuth/AuthProvider'
+import { useAuthState } from "react-firebase-hooks/auth";
+
 function App() {
+  const [user, loading] = useAuthState(auth);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
   return (
-    <Router>                         
-            <Routes>
-               <Route path="/home" element={<HomePage/>}/>
-               <Route path="/" element={<LandingPage/>}/>
-               <Route path="/signup" element={<Signup/>}/>
-               <Route path="/login" element={<Login/>}/>
-               <Route path="/artist" element={<Artist/>}/>
-            </Routes>
-    </Router>
+    <AuthProvider>                         
+      <Router>
+        <Routes>
+          <Route path="/" element={<LandingPage/>}/>
+          {user ? (
+            <Route path="/home" element={<HomePage/>}/>
+          ) : (
+            <Route path="*" element={<div> Not Found or You do not have permission.</div>} />
+          )}
+          <Route path="/signup" element={<Signup/>}/>
+          <Route path="/login" element={<Login/>}/>
+          <Route path="/artist" element={<Artist/>}/>
+        </Routes>
+      </Router>
+    </AuthProvider>
   );
 }
- 
+
 export default App;
