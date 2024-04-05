@@ -17,7 +17,8 @@ const LandingPage = () => {
   const googlePopup = () => { 
     signInWithGoogle().then((result) => {
       console.log(result);
-      navigate('/home');
+      if (result) navigate('/home');
+      else return;
     }).catch((error) => {
       console.log(error);
     });
