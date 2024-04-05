@@ -1,14 +1,16 @@
 import React from 'react';
-import HomePage from './components/homePage/homePage.jsx';
-import Artist from './components/homePage/artist.jsx';
-import Signup from './userAuth/signUp.jsx';
-import Login from './userAuth/login.jsx';
-import LandingPage from './components/LandingPage/landingPage.jsx';
+import HomePage from './components/homePage/homePage';
+import Artist from './components/homePage/artist';
+import Signup from './userAuth/signUp';
+import Login from './userAuth/login';
+import LandingPage from './components/LandingPage/landingPage';
+import NotFound from './userAuth/notFound'; // Assuming NotFound is placed in the components folder
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { auth } from './userAuth/firebase.js';
-import { AuthProvider } from './userAuth/AuthProvider'
+import { auth } from './userAuth/firebase';
+import { AuthProvider } from './userAuth/AuthProvider';
 import { useAuthState } from "react-firebase-hooks/auth";
-import MoodStatus from './components/homePage/moodStatus.jsx';
+import MoodStatus from './components/homePage/moodStatus';
+
 function App() {
   const [user, loading] = useAuthState(auth);
 
@@ -17,21 +19,29 @@ function App() {
   }
 
   return (
-    <AuthProvider>                         
+    <AuthProvider>
       <Router>
         <Routes>
-          <Route path="/" element={<LandingPage/>}/>
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/signup" element={user ? <Navigate replace to="/home" /> : <Signup />} />
+          <Route path="/login" element={user ? <Navigate replace to="/home" /> : <Login />} />
+          {/* Protected Routes */}
           {user ? (
             <>
-              <Route path="/home" element={<HomePage/>}/>
-              <Route path="/signup" element={<Signup/>}/>
-              <Route path="/login" element={<Login/>}/>
-              <Route path="/artist" element={<Artist/>}/>
-              <Route path="/status" element={<MoodStatus/>}/>
+              <Route path="/home" element={<HomePage />} />
+              <Route path="/artist" element={<Artist />} />
+              <Route path="/status" element={<MoodStatus />} />
             </>
-          ): (
-            <Route path="*" element={<div style="color:white"> Not Found or You do not have permission.</div>} />
+          ) : (
+            <>
+              {/* Redirect user to Login if they are not logged in and trying to access a protected route */}
+              <Route path="/home" element={<Navigate replace to="/login" />} />
+              <Route path="/artist" element={<Navigate replace to="/login" />} />
+              <Route path="/status" element={<Navigate replace to="/login" />} />
+            </>
           )}
+          {/* Catch-all Route */}
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </Router>
     </AuthProvider>
