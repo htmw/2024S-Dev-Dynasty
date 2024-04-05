@@ -126,58 +126,6 @@ const HomePage = () => {
                         borderRight: '1px solid #b71c1c',
                     }}
                 >
-                    <Modal
-                        aria-labelledby="transition-modal-title"
-                        aria-describedby="transition-modal-description"
-                        open={openModal}
-                        onClose={handleCloseModal}
-                        closeAfterTransition
-                    >
-                        <Fade in={openModal}>
-                            <Paper elevation={3} sx={{
-                                position: 'absolute',
-                                top: '50%',
-                                left: '50%',
-                                transform: 'translate(-50%, -50%)',
-                                width: 300,
-                                bgcolor: '#121212', // Black background
-                                color: '#b71c1c', // Red text
-                                boxShadow: 24,
-                                p: 4,
-                                display: 'flex',
-                                flexDirection: 'column',
-                                alignItems: 'center',
-                                gap: 2
-                            }}>
-                                <Typography variant="h6" component="h2" sx={{ color: 'white' }}>
-                                    Upload Your Image
-                                </Typography>
-                                <Button
-                                    startIcon={<CameraAltIcon sx={{ color: '#b71c1c' }} />}
-                                    sx={{ color: 'white' }}
-                                >
-                                    Camera
-                                </Button>
-                                <>
-
-                                    <input
-                                        type="file"
-                                        ref={fileInputRef}
-                                        style={{ display: 'none' }}
-                                        onChange={handleFileSelection}
-                                    />
-                                </>
-
-                                <Button
-                                    startIcon={<InsertDriveFileIcon sx={{ color: '#b71c1c' }} />}
-                                    onClick={() => fileInputRef.current.click()}
-                                    sx={{ color: 'white' }}
-                                >
-                                    Browse Files
-                                </Button>
-                            </Paper>
-                        </Fade>
-                    </Modal>
                     <List>
                         {menuItems.map((item, index) => (
                             <ListItem button key={index} onClick={item.onClick} sx={{ '&:hover': { bgcolor: '#757575' } }}>
