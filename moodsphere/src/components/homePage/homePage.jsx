@@ -24,39 +24,6 @@ const HomePage = () => {
     const handleMenu = (event) => {
         setAnchorEl(event.currentTarget);
     };
-    const [recommendedSongs, setRecommendedSongs] = useState([]);
-    const fileInputRef = useRef(null);
-    const handleFileSelection = async (event) => {
-        const file = event.target.files[0];
-        console.log("event->", event)
-        if (file) {
-            console.log(file.name); 
-            try {
-                handleCloseModal();
-                const formData = new FormData();
-                formData.append('image', file);
-
-                const response = await fetch('http://127.0.0.1:5000/predict', {
-                    method: 'POST',
-                    body: formData,
-                });
-
-                if (!response.ok) {
-                    throw new Error('Failed to predict emotion');
-                }
-
-                const data = await response.json();
-                console.log('Prediction:', data.prediction);
-                console.log('Recommended Songs:', data.recommended_songs);
-
-                // Set the state with the fetched recommended songs
-                setRecommendedSongs(data.recommended_songs);
-            } catch (err) {
-                console.error('Error:', err.message);
-                handleCloseModal();
-            }
-        }
-    };
 
     const handleClose = () => {
         setAnchorEl(null);
@@ -77,15 +44,6 @@ const HomePage = () => {
         backgroundColor: '#121212', // Dark background
         color: '#b71c1c', // Red accent text
         boxShadow: '0 2px 4px -1px rgba(183, 28, 28, 0.2), 0 4px 5px 0 rgba(183, 28, 28, 0.14), 0 1px 10px 0 rgba(183, 28, 28, 0.12)', // Red-toned shadow for depth
-    };
-
-    // Typography styles
-    const typographyStyle = {
-        flexGrow: 1,
-        fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
-        fontWeight: 500,
-        letterSpacing: '0.05rem',
-        color: '#b71c1c'
     };
 
     const menuItems = [
@@ -138,19 +96,6 @@ const HomePage = () => {
                         MoodSphere
                     </Typography>
 
-                    {/* <TextField
-                        variant="outlined"
-                        placeholder="Search…"
-                        size="small"
-                        sx={{ bgcolor: 'white', borderRadius: '20px' }}
-                        InputProps={{
-                            startAdornment: (
-                                <InputAdornment position="start">
-                                    <SearchIcon />
-                                </InputAdornment>
-                            ),
-                        }}
-                    /> */}
                     <IconButton
                         size="large"
                         edge="end"
@@ -306,7 +251,6 @@ const HomePage = () => {
                         ))}
 
                     </Box>
-                    <RecommendedSongs recommendedSongs={recommendedSongs} />
                 </Box>
 
             </div>

@@ -317,7 +317,7 @@ const MoodStatus = () => {
                             </Box>
                         )}
                         {/* Recommended songs display */}
-                        {uploadedImage && predictedSongs && (
+                        {uploadedImage && predictedSongs && predictedSongs.length > 0 && (
                             <Box sx={{
                                 display: 'flex',
                                 justifyContent: 'center',
