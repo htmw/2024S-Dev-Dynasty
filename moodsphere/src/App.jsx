@@ -8,7 +8,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { auth } from './userAuth/firebase.js';
 import { AuthProvider } from './userAuth/AuthProvider'
 import { useAuthState } from "react-firebase-hooks/auth";
-
+import MoodStatus from './components/homePage/moodStatus.jsx';
 function App() {
   const [user, loading] = useAuthState(auth);
 
@@ -22,13 +22,16 @@ function App() {
         <Routes>
           <Route path="/" element={<LandingPage/>}/>
           {user ? (
-            <Route path="/home" element={<HomePage/>}/>
-          ) : (
-            <Route path="*" element={<div> Not Found or You do not have permission.</div>} />
+            <>
+              <Route path="/home" element={<HomePage/>}/>
+              <Route path="/signup" element={<Signup/>}/>
+              <Route path="/login" element={<Login/>}/>
+              <Route path="/artist" element={<Artist/>}/>
+              <Route path="/status" element={<MoodStatus/>}/>
+            </>
+          ): (
+            <Route path="*" element={<div style="color:white"> Not Found or You do not have permission.</div>} />
           )}
-          <Route path="/signup" element={<Signup/>}/>
-          <Route path="/login" element={<Login/>}/>
-          <Route path="/artist" element={<Artist/>}/>
         </Routes>
       </Router>
     </AuthProvider>

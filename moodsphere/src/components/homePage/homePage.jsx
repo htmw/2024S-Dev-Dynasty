@@ -89,8 +89,7 @@ const HomePage = () => {
     };
 
     const menuItems = [
-        { text: 'Home', icon: <HomeIcon />, onClick: () => navigate('/') },
-        { text: 'Search', icon: <SearchIcon />, onClick: () => navigate('/search') },
+        { text: 'Home', icon: <HomeIcon />, onClick: () => navigate('/home') },
         { text: 'Library', icon: <LibraryMusicIcon />, onClick: () => navigate('/library') },
         { text: 'Profile', icon: <AccountCircleIcon />, onClick: () => navigate('/profile') },
     ];
@@ -100,7 +99,6 @@ const HomePage = () => {
         { text: 'Find Artist By Artist', icon: <PersonSearchIcon />, onClick: () => navigate('/artist') },
         { text: 'Find Music By Mood', icon: <MoodIcon />, onClick: () => navigate('/mood') },
         { text: 'Mood Status', icon: <EmojiEmotionsIcon />, onClick: () => navigate('/status') },
-        { text: 'Upload Your Image', icon: <PhotoCameraIcon />, onClick: handleOpenModal }
     ];
 
     return (
@@ -133,8 +131,6 @@ const HomePage = () => {
                         open={Boolean(anchorEl)}
                         onClose={handleClose}
                     >
-                        <MenuItem onClick={handleClose}>Profile</MenuItem>
-                        <MenuItem onClick={handleClose}>My account</MenuItem>
                         <MenuItem onClick={userLogOut}>Logout</MenuItem>
                     </Menu>
 
@@ -142,7 +138,7 @@ const HomePage = () => {
                         MoodSphere
                     </Typography>
 
-                    <TextField
+                    {/* <TextField
                         variant="outlined"
                         placeholder="Search…"
                         size="small"
@@ -154,7 +150,7 @@ const HomePage = () => {
                                 </InputAdornment>
                             ),
                         }}
-                    />
+                    /> */}
                     <IconButton
                         size="large"
                         edge="end"
