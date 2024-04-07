@@ -44,6 +44,64 @@ def recommend_songs(pred_class):
 def home():
     return render_template('index.html', data=Music_Player)
 
+#Songs by artist ~Shane
+def get_songs_by_artist(artist_name):
+    songs_by_artist = Music_Player[Music_Player['artist'] == artist_name]
+    if songs_by_artist.empty:
+        return []
+    return songs_by_artist[['name', 'artist']].values.tolist()
+
+def get_songs_by_genre(artist_name):
+    songs_by_artist = Music_Player[Music_Player['artist'] == artist_name]
+    if songs_by_artist.empty:
+        return []
+    return songs_by_artist[['name', 'artist']].values.tolist()
+
+#API for recommending songs based on artists ~Shane
+@app.route('/songs-by-artist', methods=['POST'])
+def artist():
+    try:
+        data = request.get_json()
+        artist_name = data.get('artist_name')
+
+        if not artist_name:
+            return jsonify({'error': 'Artist name not provided'}), 400
+
+        songs = get_songs_by_artist(artist_name)
+        if not songs:
+            return jsonify({'message': 'No songs found for the provided artist'}), 404
+
+        return jsonify({'songs': songs}), 200
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+    
+#Songs by genre ~Shane
+def get_songs_by_genre(genre_name):
+    songs_by_genre = Music_Player[Music_Player['genre'] == genre_name]
+    if songs_by_genre.empty:
+        return []
+    return songs_by_genre[['name', 'genre']].values.tolist()
+
+
+#API for retrieving songs by genre ~Shane
+@app.route('/songs-by-genre', methods=['POST'])
+def genre():
+    try:
+        data = request.get_json()
+        genre_name = data.get('genre_name')
+
+        if not genre_name:
+            return jsonify({'error': 'Genre name not provided'}), 400
+
+        songs = get_songs_by_genre(genre_name)
+        if not songs:
+            return jsonify({'message': 'No songs found for the provided genre'}), 404
+
+        return jsonify({'songs': songs}), 200
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 # Define route for prediction
 @app.route('/predict', methods=['POST'])
