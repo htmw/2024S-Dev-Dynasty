@@ -13,7 +13,8 @@ import { useNavigate } from 'react-router-dom';
 import Bubble from '../LandingPage/homebubble';
 import RecommendedSongs from './recommendedSongs';
 import { logout } from '../../userAuth/firebase';
-import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 const MoodStatus = () => {
     const navigate = useNavigate();
     const [anchorEl, setAnchorEl] = React.useState(null);
@@ -23,6 +24,7 @@ const MoodStatus = () => {
     const [predictedSongs, setPredictedSongs] = useState([]);
     const [image, setImage] = useState(null);
     const fileInputRef = useRef(null);
+    const [showInfoText, setShowInfoText] = useState(true);
     const handleFileUpload = (event) => {
         const file = event.target.files[0];
         if (file) {
@@ -31,6 +33,7 @@ const MoodStatus = () => {
             setUploadedImage(URL.createObjectURL(file));
             setImage(formData); // formData is ready for the fetch call.
             handleCloseModal();
+            setShowInfoText(false);
         } else {
             setUploadedImage(null);
             setImage(null);
@@ -38,10 +41,10 @@ const MoodStatus = () => {
     };
     const handleImageRemove = () => {
         setUploadedImage(null);
-        //fileInputRef.current.value = null;
         setImage(null);
         setPredictedSongs(null);
         setMood(null);
+        setShowInfoText(true);
     };
     const handleMenu = (event) => {
         setAnchorEl(event.currentTarget);
@@ -51,6 +54,7 @@ const MoodStatus = () => {
     };
     const handleOpenModal = () => {
         setOpenModal(true);
+        
     };
 
     const handleCloseModal = () => {
@@ -65,6 +69,15 @@ const MoodStatus = () => {
         console.log(uploadedImage)
         if (!image) {
             console.error('Please upload an image first.');
+            toast.error("Please Upload Your Image", {
+                position: "top-center",
+                autoClose: 2000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
             return;
         }
 
@@ -235,6 +248,8 @@ const MoodStatus = () => {
                         </Box>
                     </Box>
                 </Box>
+                <ToastContainer />
+               
                 <Box sx={{ position: 'relative', width: '100%' }}>
                     <Box
                         sx={{
@@ -248,6 +263,29 @@ const MoodStatus = () => {
                             backgroundColor: 'black', // Dark background
                         }}
                     >
+                    
+                    {/* Check for showInfoText to conditionally render the info text */}
+                    {showInfoText && (
+                        <Typography
+                            sx={{
+                                position: 'absolute',
+                                top: 70, // Adjust as needed for positioning
+                                left: '50%',
+                                transform: 'translateX(-50%)',
+                                width: '80%',
+                                textAlign: 'center',
+                                zIndex: 2,
+                                color: 'white',
+                                backgroundColor: 'rgba(0, 0, 0, 0.5)', // Semi-transparent black background
+                                padding: '100px',
+                                borderRadius: '5px',
+                                fontSize: '29px',
+                            }}
+                        >
+                            Please click on "Upload Image" and predict songs based on your mood.
+                        </Typography>
+                    )}
+                    
                         <Button
                             startIcon={<CameraAltIcon />}
                             onClick={handleOpenModal}
@@ -299,13 +337,13 @@ const MoodStatus = () => {
                                 />
                                 <Button
                                     onClick={handleImageRemove}
-                                    sx={{
-                                        position: 'relative',
-                                        color: 'red',
-                                        zIndex: 3,
-                                    }}
+                                   
+                                    sx={{ backgroundColor: '#b71c1c', color: 'white', marginTop: '20px', zIndex: 3 }}
+                                  
                                 >
-                                    <RemoveCircleIcon />
+                               
+                                    {/* <RemoveCircleIcon /> */}
+                                    Remove
                                 </Button>
                             </div>
                         )}
