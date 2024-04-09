@@ -5,7 +5,8 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import { Typography, Container, TextField, Button, Link, AppBar, Toolbar, IconButton } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import Bubble from '../components/LandingPage/homebubble';
-
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 const Login = () => {
     const navigate = useNavigate();
     const [email, setEmail] = useState('');
@@ -23,6 +24,29 @@ const Login = () => {
                 const errorCode = error.code;
                 const errorMessage = error.message;
                 console.log(errorCode, errorMessage);
+                // Check if the error code is related to user not found or not signed up
+                if (errorCode === 'auth/user-not-found') {
+                    toast.error("Invalid Credentials", {
+                        position: "top-center",
+                        autoClose: 2000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                    });
+                } else {
+                    // Handle other kinds of errors here
+                    toast.error("Invalid Credentials", {
+                        position: "top-center",
+                        autoClose: 2000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                    });
+                }
             });
     };
 
@@ -136,6 +160,7 @@ const Login = () => {
                     </Typography>
                 </form>
             </Container>
+            <ToastContainer position="top-center" autoClose={2000} />
         </>
     );
 };

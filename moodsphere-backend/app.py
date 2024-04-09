@@ -11,13 +11,13 @@ app = Flask(__name__)
 CORS(app)
 
 # Load your pre-trained Keras model
-model = load_model("C:/Users/shane/Desktop/2024S-Dev-Dynasty/moodsphere-backend/NewEpchModelSave.keras")
+model = load_model("./NewEpchModelSave.keras")
 
 # Define class names
 class_names = ['Angry', 'Disgust', 'Fear', 'Happy', 'Neutral', 'Sad', 'Surprise']
 
 # Load your CSV data
-Music_Player = pd.read_csv("C:/Users/shane/Desktop/2024S-Dev-Dynasty/data_moods.csv")
+Music_Player = pd.read_csv("./app/static/Data/data_moods.csv")
 # Adjust the path as necessary
 
 
