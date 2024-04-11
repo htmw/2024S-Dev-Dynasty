@@ -67,8 +67,8 @@ const HomePage = () => {
     ];
 
     const actionItems = [
-        { text: 'Find Artist By Genre', icon: <LibraryMusicIcon />, onClick: () => navigate('/genre') },
-        { text: 'Find Artist By Artist', icon: <PersonSearchIcon />, onClick: () => navigate('/artist') },
+        { text: 'Find Music By Genre', icon: <LibraryMusicIcon />, onClick: () => navigate('/genre') },
+        { text: 'Find Music By Artist', icon: <PersonSearchIcon />, onClick: () => navigate('/artist') },
         { text: 'Find Music By Mood', icon: <MoodIcon />, onClick: () => navigate('/mood') },
         { text: 'Mood Status', icon: <EmojiEmotionsIcon />, onClick: () => navigate('/status') },
     ];
@@ -311,7 +311,7 @@ const HomePage = () => {
                     fontSize: "1rem",
                     borderRadius: "20px",
                     textTransform: "none",
-                    width: "220px", // Ensures button width matches the sidebar
+                    width: "230px", // Ensures button width matches the sidebar
                   }}
                 >
                   {item.text}
