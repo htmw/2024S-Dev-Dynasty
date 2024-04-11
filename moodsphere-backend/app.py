@@ -44,12 +44,17 @@ def recommend_songs(pred_class):
 def home():
     return render_template('index.html', data=Music_Player)
 
-#Songs by artist ~Shane
 def get_songs_by_artist(artist_name):
+    # Filter the DataFrame for rows where the 'artist' column matches the artist_name
     songs_by_artist = Music_Player[Music_Player['artist'] == artist_name]
+    
+    # Check if the filtered DataFrame is empty
     if songs_by_artist.empty:
         return []
-    return songs_by_artist[['name', 'artist']].values.tolist()
+    
+    # Convert the filtered DataFrame to a list of dictionaries, 
+    # where each dictionary represents a row in the DataFrame
+    return songs_by_artist.to_dict('records')
 
 def get_songs_by_genre(artist_name):
     songs_by_artist = Music_Player[Music_Player['artist'] == artist_name]
