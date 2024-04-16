@@ -5,19 +5,32 @@ import { auth } from './firebase';
 import { Typography, Container, TextField, Button, Link, AppBar, Toolbar, IconButton } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import Bubble from '../components/LandingPage/homebubble'; 
+import axios from 'axios';
 
 const Signup = () => {
     const navigate = useNavigate();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [firstName, setFirstName] = useState('');  // State for first name
+    const [lastName, setLastName] = useState('');  // State for last name
 
     const onSubmit = async (e) => {
         e.preventDefault();
         await createUserWithEmailAndPassword(auth, email, password)
             .then((userCredential) => {
                 const user = userCredential.user;
-                console.log(user);
-                navigate("/login");
+                // Call the API to save the user's first name and last name
+                axios.post('http://localhost:5000/save-user', {
+                    user_id: user.uid,
+                    first_name: firstName,
+                    last_name: lastName
+                })
+                .then(() => {
+                    navigate("/login");
+                })
+                .catch((error) => {
+                    console.error('Error saving user details:', error);
+                });
             })
             .catch((error) => {
                 const errorCode = error.code;
@@ -44,6 +57,84 @@ const Signup = () => {
                     User Register
                 </Typography>
                 <form onSubmit={onSubmit} style={{ width: '100%', maxWidth: '400px', position: 'relative', zIndex: 1 }}>
+                <TextField
+                        type="text"
+                        label="First Name"
+                        value={firstName}
+                        onChange={(e) => setFirstName(e.target.value)}
+                        required
+                        fullWidth
+                        margin="normal"
+                        variant="outlined"
+                        InputLabelProps={{
+                            style: { color: 'red', fontWeight: 'bold' }
+                        }}
+                        sx={{
+                            '& .MuiOutlinedInput-root': {
+                                '& fieldset': {
+                                    borderColor: 'red',
+                                },
+                                '&:hover fieldset': {
+                                    borderColor: '#CC0000',
+                                },
+                                '&.Mui-focused fieldset': {
+                                    borderColor: '#CC0000',
+                                },
+                                '& input': {
+                                    color: 'white',
+                                    backgroundColor: 'black',
+                                    '&:-webkit-autofill': {
+                                        backgroundColor: 'black !important',
+                                    },
+                                },
+                                '& input::placeholder': {
+                                    color: 'white',
+                                },
+                                '& input:-ms-input-placeholder': {
+                                    color: 'white',
+                                },
+                            },
+                        }}  // Style as necessary
+                    />
+                    <TextField
+                        type="text"
+                        label="Last Name"
+                        value={lastName}
+                        onChange={(e) => setLastName(e.target.value)}
+                        required
+                        fullWidth
+                        margin="normal"
+                        variant="outlined"
+                        InputLabelProps={{
+                            style: { color: 'red', fontWeight: 'bold' }
+                        }}
+                        sx={{
+                            '& .MuiOutlinedInput-root': {
+                                '& fieldset': {
+                                    borderColor: 'red',
+                                },
+                                '&:hover fieldset': {
+                                    borderColor: '#CC0000',
+                                },
+                                '&.Mui-focused fieldset': {
+                                    borderColor: '#CC0000',
+                                },
+                                '& input': {
+                                    color: 'white',
+                                    backgroundColor: 'black',
+                                    '&:-webkit-autofill': {
+                                        backgroundColor: 'black !important',
+                                    },
+                                },
+                                '& input::placeholder': {
+                                    color: 'white',
+                                },
+                                '& input:-ms-input-placeholder': {
+                                    color: 'white',
+                                },
+                            },
+                        }}  // Style as necessary
+                    />
                     <TextField
                         type="email"
                         label="Email address"
