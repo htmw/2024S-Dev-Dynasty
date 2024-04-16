@@ -6,6 +6,13 @@ import io
 import base64
 import pandas as pd
 from flask_cors import CORS
+import firebase_admin
+from firebase_admin import credentials, firestore
+
+# Initialize Firebase Admin
+cred = credentials.Certificate('./moodsphere-dev-dynasty-firebase-adminsdk-ycn9w-4ec19c3952.json')
+firebase_admin.initialize_app(cred)
+db = firestore.client()
 
 app = Flask(__name__)
 CORS(app)
@@ -20,6 +27,26 @@ class_names = ['Angry', 'Disgust', 'Fear', 'Happy', 'Neutral', 'Sad', 'Surprise'
 Music_Player = pd.read_csv("./app/static/Data/data_moods.csv")
 # Adjust the path as necessary
 
+@app.route('/save-user', methods=['POST'])
+def save_user():
+    try:
+        data = request.get_json()
+        user_id = data['user_id']
+        first_name = data['first_name']
+        last_name = data['last_name']
+
+        # Firestore operation
+        users_ref = db.collection('users')
+        users_ref.document(user_id).set({
+            'first_name': first_name,
+            'last_name': last_name,
+            'user_id': user_id
+        })
+
+        return jsonify({'success': True, 'message': 'User data saved successfully'}), 200
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 # Function to recommend songs based on predicted class
 def recommend_songs(pred_class):
