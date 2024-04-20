@@ -12,7 +12,7 @@ const AuthProvider = ({ children }) => {
       if (authUser) {
         // The user is logged in
         setUser({
-          ...userDetails,
+          ...authUser,
           isGuest: false
         });
       } else {
