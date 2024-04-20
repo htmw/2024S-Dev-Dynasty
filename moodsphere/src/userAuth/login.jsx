@@ -7,8 +7,11 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import Bubble from '../components/LandingPage/homebubble';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useAuth } from './AuthProvider';
 const Login = () => {
+    const { loginAsGuest } = useAuth();
     const navigate = useNavigate();
+    
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
@@ -49,7 +52,10 @@ const Login = () => {
                 }
             });
     };
-
+    const handleGuestLogin = () => {
+        loginAsGuest();
+        navigate("/status"); // Navigate to mood status page
+    };
     return (
         <>
             <AppBar sx={{ bgcolor: 'black' }}>
@@ -154,6 +160,9 @@ const Login = () => {
                     />
                     <Button type="submit" variant="contained" color="error" fullWidth sx={{ mt: 2 }}>
                         Login
+                    </Button>
+                    <Button onClick={handleGuestLogin} variant="contained" color="primary" fullWidth sx={{ mt: 2 }}>
+                        Join as Guest
                     </Button>
                     <Typography variant="body1" align="center" sx={{ color: 'white', mt: 2 }}>
                         Don't have an account? <Link component={NavLink} to="/signup" sx={{ color: 'red' }}>Sign up</Link>

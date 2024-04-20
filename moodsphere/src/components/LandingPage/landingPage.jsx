@@ -6,9 +6,12 @@ import { signInWithGoogle } from '../../userAuth/firebase';
 import GoogleIcon from '@mui/icons-material/Google';
 import EmailIcon from '@mui/icons-material/Email';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
+import { useAuth } from '../../userAuth/AuthProvider';
+import PersonIcon from '@mui/icons-material/Person'; 
 
 const LandingPage = () => {
   const navigate = useNavigate();
+  const { loginAsGuest } = useAuth();
 
   const handleGetStartedClick = () => {
     navigate('/signup');
@@ -25,6 +28,10 @@ const LandingPage = () => {
 
   const loginWithEmail = () => {
     navigate('/login');
+  };
+const guestLogin = () => {
+    loginAsGuest();  // Set the user as a guest
+    navigate('/status');  // Navigate to a specific page allowed for guests
   };
 
   return (
@@ -74,6 +81,9 @@ const LandingPage = () => {
               </Button>
               <Button variant="contained" color="error" size="small" onClick={loginWithEmail} style={{ minWidth: '150px' }}>
                 <EmailIcon sx={{ marginRight: '10px' }} /> Login With Email
+              </Button>
+              <Button variant="contained" color="error" size="small" onClick={guestLogin} style={{ minWidth: '150px' }}>
+                <PersonIcon sx={{ marginRight: '10px' }} /> Login as Guest
               </Button>
             </div>
           </Container>
