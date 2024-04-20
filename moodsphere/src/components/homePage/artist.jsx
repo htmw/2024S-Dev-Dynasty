@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Box, Button, List, ListItem, ListItemIcon, ListItemText, Typography, AppBar, Toolbar, CssBaseline, Link, Divider, IconButton, Avatar, Menu, MenuItem, TextField, InputAdornment } from '@mui/material';
 import HomeIcon from '@mui/icons-material/Home';
 import MenuIcon from '@mui/icons-material/Menu';
@@ -7,12 +7,14 @@ import LibraryMusicIcon from '@mui/icons-material/LibraryMusic';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { useNavigate } from 'react-router-dom';
 import Bubble from '../LandingPage/homebubble';
-
-
+import artists from './artistList.js'
+import RecommendedSongs from './recommendedSongs.jsx'
 const Artist = () => {
     const navigate = useNavigate();
     const [anchorEl, setAnchorEl] = React.useState(null);
-
+    const [searchQuery, setSearchQuery] = useState('');
+    const [filteredArtists, setFilteredArtists] = useState(artists);
+    const [predictedSongs, setPredictedSongs] = useState([]);
     const handleMenu = (event) => {
         setAnchorEl(event.currentTarget);
     };
@@ -21,18 +23,43 @@ const Artist = () => {
         setAnchorEl(null);
     };
 
+    useEffect(() => {
+        const results = artists.filter(artist =>
+            artist.toLowerCase().includes(searchQuery.toLowerCase())
+        );
+        setFilteredArtists(results);
+    }, [searchQuery]);
+
+    const handleSearchChange = (event) => {
+        setSearchQuery(event.target.value);
+    };
+    const fetchArtistInfo = async (artistName) => {
+        try {
+            const response = await fetch('http://localhost:5000/songs-by-artist', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ artist_name: artistName }),
+            });
+    
+            if (!response.ok) {
+                throw new Error(`Error: ${response.status}`);
+            }
+    
+            const data = await response.json();
+            console.log(data); 
+            setPredictedSongs(data.songs); 
+        } catch (error) {
+            console.error("Failed to fetch artist info:", error);
+            // Handle errors, e.g., by setting an error state or displaying a notification
+        }
+    };
+
     const appBarStyle = {
         backgroundColor: '#121212',
         color: '#b71c1c',
         boxShadow: '0 2px 4px -1px rgba(183, 28, 28, 0.2), 0 4px 5px 0 rgba(183, 28, 28, 0.14), 0 1px 10px 0 rgba(183, 28, 28, 0.12)',
-    };
-
-    const typographyStyle = {
-        flexGrow: 1,
-        fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
-        fontWeight: 500,
-        letterSpacing: '0.05rem',
-        color: '#b71c1c'
     };
 
     const menuItems = [
@@ -130,46 +157,85 @@ const Artist = () => {
                         </Box>
                     </Box>
                 </Box>
+                <Box sx={{ display: 'flex', height: 'calc(100vh - 64px)', paddingTop: '64px' }}>
                 <Box
-                    component="main"
                     sx={{
-                        flexGrow: 1,
+                        width: '50%',
+                        overflowY: 'auto',
+                        bgcolor: '#121212',
                         color: 'white',
-                        backgroundSize: 'cover',
-                        backgroundPosition: 'center',
-                        backgroundBlendMode: 'darken',
-                        backgroundColor: 'rgba(0, 0, 0, 0.99)',
-                        position: 'relative',
-                        '::before': {
-                            content: '""',
-                            position: 'relative',
-                            top: 0,
-                            left: 0,
-                            right: 0,
-                            bottom: 0,
-                            backgroundSize: 'cover',
-                            backgroundPosition: 'center',
-                            opacity: 0.2,
-                            zIndex: -1,
-                        },
+                        padding: '20px',
+                        boxSizing: 'border-box',
                     }}
                 >
-                    <Bubble style={{ position: 'absolute', zIndex: 0 }} />
-                    <Typography variant="h4" align="center" gutterBottom>Welcome to MoodSphere</Typography>
-                    <Box sx={{ position: 'absolute', bottom: '20px', left: '50%', transform: 'translateX(-50%)', zIndex: 1 }}>
-                        <Button variant="contained" color="primary" sx={{ m: 1, color: 'black', bgcolor: 'white', '&:hover': { bgcolor: '#b71c1c' } }}>All</Button>
-                        <Button variant="contained" color="primary" sx={{ m: 1, color: 'black', bgcolor: 'white', '&:hover': { bgcolor: '#b71c1c' } }}>Album</Button>
-                        <Button variant="contained" color="primary" sx={{ m: 1, color: 'black', bgcolor: 'white', '&:hover': { bgcolor: '#b71c1c' } }}>Artist</Button>
-                        <Button variant="contained" color="primary" sx={{ m: 1, color: 'black', bgcolor: 'white', '&:hover': { bgcolor: '#b71c1c' } }}>Top Hits</Button>
-                        <Button variant="contained" color="primary" sx={{ m: 1, color: 'black', bgcolor: 'white', '&:hover': { bgcolor: '#b71c1c' } }}>Language</Button>
-                        <Button variant="contained" color="primary" sx={{ m: 1, color: 'black', bgcolor: 'white', '&:hover': { bgcolor: '#b71c1c' } }}>Arjit Singh</Button>
-                        <Button variant="contained" color="primary" sx={{ m: 1, color: 'black', bgcolor: 'white', '&:hover': { bgcolor: '#b71c1c' } }}>Taylor Swift</Button>
-                        <Button variant="contained" color="primary" sx={{ m: 1, color: 'black', bgcolor: 'white', '&:hover': { bgcolor: '#b71c1c' } }}>Shawn Mendes</Button>
-                        <Button variant="contained" color="primary" sx={{ m: 1, color: 'black', bgcolor: 'white', '&:hover': { bgcolor: '#b71c1c' } }}>Ed Sheran</Button>
-                        <Button variant="contained" color="primary" sx={{ m: 1, color: 'black', bgcolor: 'white', '&:hover': { bgcolor: '#b71c1c' } }}>Drake</Button>
-                        <Button variant="contained" color="primary" sx={{ m: 1, color: 'black', bgcolor: 'white', '&:hover': { bgcolor: '#b71c1c' } }}>Sonu Nigam</Button>
-                    </Box>
+                    <Typography variant="h6" color="inherit" gutterBottom>
+                        Artists
+                    </Typography>
+                    <Divider sx={{ bgcolor: '#b71c1c', marginBottom: '20px' }} />
+                        <TextField
+                            fullWidth
+                            variant="outlined"
+                            placeholder="Search Artists..."
+                            value={searchQuery}
+                            onChange={handleSearchChange}
+                            InputProps={{
+                                startAdornment: (
+                                    <InputAdornment position="start">
+                                        <SearchIcon sx={{ color: 'red' }} />
+                                    </InputAdornment>
+                                ),
+                                style: {
+                                    color: 'red', // Change text color to red
+                                },
+                            }}
+                            sx={{
+                                marginBottom: 2,
+                                '& .MuiOutlinedInput-root': {
+                                    '& fieldset': {
+                                        borderColor: 'red', // Change border color to red
+                                    },
+                                    '&:hover fieldset': {
+                                        borderColor: 'red', // Change border color on hover to red
+                                    },
+                                    '&.Mui-focused fieldset': {
+                                        borderColor: 'red', // Change border color when focused to red
+                                    }
+                                },
+                                '& .MuiInputLabel-root': { // Change label color to red
+                                    color: 'red',
+                                },
+                                '& .MuiInput-underline:before': { // Change underline color when not focused
+                                    borderBottomColor: 'red',
+                                },
+                                '& .MuiInput-underline:after': { // Change underline color when focused
+                                    borderBottomColor: 'red',
+                                }
+                            }}
+                        />
+                    <List>
+                        {filteredArtists.map((artist, index) => (
+                            <ListItem 
+                                key={index}
+                                sx={{ borderBottom: '1px solid #b71c1c', cursor: 'pointer' }}
+                                onClick={() => fetchArtistInfo(artist)}>
+                                {artist}
+                            </ListItem>
+                        ))}
+                    </List>
                 </Box>
+                <Box
+                    sx={{
+                        width: '50%',
+                        overflowY: 'auto',
+                        bgcolor: '#333',
+                        color: 'white',
+                        padding: '20px',
+                        boxSizing: 'border-box',
+                    }}
+                >
+                    <RecommendedSongs recommendedSongs={predictedSongs} />
+                </Box>
+            </Box>
             </div>
         </>
     );
