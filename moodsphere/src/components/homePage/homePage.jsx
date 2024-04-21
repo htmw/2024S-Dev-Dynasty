@@ -85,20 +85,12 @@ const HomePage = () => {
       "0 2px 4px -1px rgba(183, 28, 28, 0.2), 0 4px 5px 0 rgba(183, 28, 28, 0.14), 0 1px 10px 0 rgba(183, 28, 28, 0.12)", // Red-toned shadow for depth
   };
 
-  const menuItems = [
-    { text: "Home", icon: <HomeIcon />, onClick: () => navigate("/home") },
-    {
-      text: "Library",
-      icon: <LibraryMusicIcon />,
-      onClick: () => navigate("/library"),
-    },
-    {
-      text: "Profile",
-      icon: <AccountCircleIcon />,
-      onClick: () => navigate("/profile"),
-    },
-  ];
-
+    const menuItems = [
+        { text: 'Home', icon: <HomeIcon />, onClick: () => navigate('/home') },
+        { text: 'Library', icon: <LibraryMusicIcon />, onClick: () => navigate('/library') },
+        { text: 'Profile', icon: <AccountCircleIcon />, onClick: () => navigate('/profile') },
+        { text: 'Your Playlist', icon: <FeaturedPlayListIcon />, onClick: () => navigate('/playlists') },
+    ];
   const actionItems = [
     {
       text: "Find Artist By Genre",

@@ -15,9 +15,11 @@ import RecommendedSongs from './recommendedSongs';
 import { logout } from '../../userAuth/firebase';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import FeaturedPlayListIcon from '@mui/icons-material/FeaturedPlayList';
 import Tooltip from '@mui/material/Tooltip';
 import { useAuth } from '../../userAuth/AuthProvider';
 import { AuthProvider } from '../../userAuth/AuthProvider';
+
 const MoodStatus = () => {
     const navigate = useNavigate();
     const [anchorEl, setAnchorEl] = React.useState(null);
@@ -117,6 +119,7 @@ const MoodStatus = () => {
     };
 
     const menuItems = [
+        { text: 'Playlist', icon: <FeaturedPlayListIcon />, onClick: () => navigate('/playlists'), disabled: isGuest },
         { text: 'Home', icon: <HomeIcon />, onClick: () => navigate('/home'), disabled: isGuest },
         { text: 'Library', icon: <LibraryMusicIcon />, onClick: () => navigate('/library'), disabled: isGuest },
         { text: 'Profile', icon: <AccountCircleIcon />, onClick: () => navigate('/profile'), disabled: isGuest },
