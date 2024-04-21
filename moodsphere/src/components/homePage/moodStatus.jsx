@@ -15,6 +15,10 @@ import RecommendedSongs from './recommendedSongs';
 import { logout } from '../../userAuth/firebase';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import ReportIcon from '@mui/icons-material/Report';
+
+
+
 const MoodStatus = () => {
     const navigate = useNavigate();
     const [anchorEl, setAnchorEl] = React.useState(null);
@@ -64,6 +68,21 @@ const MoodStatus = () => {
         logout();
         navigate('/');
     }
+        // Report function
+        const handleReport = () => {
+            // Here you can implement the logic to show a report form or report dialog
+            console.log("Report button clicked");
+            // For now, let's just show a toast message
+            toast.info("Reported!", {
+                position: "top-center",
+                autoClose: 2000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
+        };
 
     const predictSongs = async () => {
         console.log(uploadedImage)
@@ -102,6 +121,7 @@ const MoodStatus = () => {
             console.error('Error predicting songs:', err.message);
         }
     };
+    
 
     // AppBar styles
     const appBarStyle = {
@@ -115,9 +135,11 @@ const MoodStatus = () => {
         { text: 'Library', icon: <LibraryMusicIcon />, onClick: () => navigate('/library') },
         { text: 'Profile', icon: <AccountCircleIcon />, onClick: () => navigate('/profile') },
     ];
+    
 
     return (
-        <> <div style= {{overflowX:'hidden', overflowY:'hidden'}}>
+        <>
+         <div style= {{overflowX:'hidden', overflowY:'hidden'}}>
             <AppBar position="static" sx={appBarStyle}>
                 <Toolbar>
                     <IconButton
@@ -148,21 +170,26 @@ const MoodStatus = () => {
                         <MenuItem onClick={userLogOut}>Logout</MenuItem>
                     </Menu>
                     <Typography variant="h6" sx={{ flexGrow: 1, color: '#b71c1c' }}>
-                        MoodSphere
-                    </Typography>
-                    <IconButton
-                        size="large"
-                        edge="end"
-                        aria-label="account of current user"
-                        aria-controls="menu-appbar"
-                        aria-haspopup="true"
-                        onClick={handleMenu}
-                        color="inherit"
-                    >
-                        <Avatar sx={{ bgcolor: '#b71c1c' }} />
-                    </IconButton>
-                </Toolbar>
-            </AppBar>
+                    MoodSphere
+                        </Typography>
+                        <IconButton
+                            color="inherit"
+                            aria-label="report"
+                            onClick={handleReport} // Call handleReport when report button is clicked
+                        >
+                            <ReportIcon />
+                        </IconButton>
+                        <IconButton
+                            color="inherit"
+                            aria-label="account of current user"
+                            aria-controls="menu-appbar"
+                            aria-haspopup="true"
+                            onClick={handleMenu}
+                        >
+                            <Avatar />
+                        </IconButton>
+                    </Toolbar>
+                </AppBar>
             <div style={{ display: 'flex', height: '91.1vh', backgroundColor: '#121212' }}>
                 <CssBaseline />
                 <Box
@@ -249,6 +276,7 @@ const MoodStatus = () => {
                     </Box>
                 </Box>
                 <ToastContainer />
+
                
                 <Box sx={{ position: 'relative', width: '100%' }}>
                     <Box
