@@ -17,14 +17,15 @@ import Bubble from '../LandingPage/homebubble';
 import RecommendedSongs from './recommendedSongs';
 import { logout } from '../../userAuth/firebase';
 import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from '@mui/material';
-
-
+import FeaturedPlayListIcon from '@mui/icons-material/FeaturedPlayList';
+import { useAuth } from '../../userAuth/AuthProvider';
 const HomePage = () => {
     const navigate = useNavigate();
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [openModal, setOpenModal] = React.useState(false);
     const [openDialog, setOpenDialog] = useState(false);
-    const [dialogContent, setDialogContent] = useState(""); // To differentiate between Legal and Privacy
+    const [dialogContent, setDialogContent] = useState(""); 
+
     const handleDialogOpen = (content) => {
         setDialogContent(content);
         setOpenDialog(true);
@@ -64,6 +65,7 @@ const HomePage = () => {
         { text: 'Home', icon: <HomeIcon />, onClick: () => navigate('/home') },
         { text: 'Library', icon: <LibraryMusicIcon />, onClick: () => navigate('/library') },
         { text: 'Profile', icon: <AccountCircleIcon />, onClick: () => navigate('/profile') },
+        { text: 'Your Playlist', icon: <FeaturedPlayListIcon />, onClick: () => navigate('/playlists') },
     ];
 
     const actionItems = [

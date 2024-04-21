@@ -1,7 +1,10 @@
-import React from 'react';
+import React, { useState, useEffect  } from 'react';
 import { motion } from 'framer-motion';
 import { Box, Typography, Card, CardContent, CardActions, Button, Link, IconButton, SvgIcon } from '@mui/material';
 import YouTubeIcon from '@mui/icons-material/YouTube';
+import PlaylistAddIcon from '@mui/icons-material/PlaylistAdd';
+import PlaylistModal from '../playlists/playlistModal'; 
+import { useAuth } from '../../userAuth/AuthProvider';
 
 function SpotifyIcon() {
   return (
@@ -27,14 +30,38 @@ function SpotifyIcon() {
 }
 
 const RecommendedSongs = ({ recommendedSongs }) => {
+  const [modalOpen, setModalOpen] = useState(false);
+  const [selectedSong, setSelectedSong] = useState(null); // Optional: track selected song for addition to playlist
+  const { user } = useAuth(); // Get the authenticated user
+  // Dummy playlist data or fetch from a state/store
+
+  const handleOpenModal = (song) => {
+    setSelectedSong(song); // Optional: track which song to add
+    console.log(song)
+    setModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setModalOpen(false);
+  };
+
+  const handleAddToPlaylist = (playlistId) => {
+    console.log(`Adding song ${selectedSong.name} to playlist ${playlistId}`); // Implement addition logic
+  };
+
+  const handleCreateNewPlaylist = () => {
+    console.log('Creating new playlist'); // Implement creation logic
+    // After creating, you might want to close the modal or refresh data
+  };
+
   return (
     <Box sx={{
       display: 'flex',
       flexDirection: 'row',
-      overflowX: 'auto', // Enables horizontal scrolling
-      overflowY: 'hidden', // Prevents vertical scrolling
-      width: '100%', // Takes the full width of its parent
-      '&::-webkit-scrollbar': { // Styles the scrollbar for WebKit browsers
+      overflowX: 'auto',
+      overflowY: 'hidden',
+      width: '100%',
+      '&::-webkit-scrollbar': {
         height: '8px',
       },
       '&::-webkit-scrollbar-thumb': {
@@ -60,8 +87,8 @@ const RecommendedSongs = ({ recommendedSongs }) => {
             backgroundColor: '#141414', // Dark grey background color for the card
             color: 'white', // White text color for better contrast
             '&:hover': {
-              boxShadow: '0 8px 16px 0 rgba(255, 255, 255, 0.2)', // Maroon shadow on hover
-              transform: 'translateY(-4px)', // Optional: Slight lift effect on hover
+              boxShadow: '0 8px 16px 0 rgba(255, 255, 255, 0.2)', // Shadow on hover
+              transform: 'translateY(-4px)', // Lift effect on hover
             },
             '& .MuiCardContent-root': {
               backgroundColor: 'inherit',
@@ -70,7 +97,7 @@ const RecommendedSongs = ({ recommendedSongs }) => {
             '& .MuiCardActions-root': {
               backgroundColor: 'inherit',
               color: 'inherit',
-              borderTop: '1px solid rgba(255, 255, 255, 0.12)', // Adds a subtle border-top
+              borderTop: '1px solid rgba(255, 255, 255, 0.12)', // Subtle border-top
             },
             '& .MuiIconButton-root': {
               color: 'inherit', // Ensures icons match the card's text color
@@ -85,6 +112,13 @@ const RecommendedSongs = ({ recommendedSongs }) => {
               </Typography>
             </CardContent>
             <CardActions>
+            <IconButton
+                size="large"
+                aria-label="add to playlist"
+                onClick={() => handleOpenModal(song)}  // Open modal on click
+              >
+                <PlaylistAddIcon />
+              </IconButton>
               <IconButton
                 size="large"
                 aria-label="spotify"
@@ -98,7 +132,7 @@ const RecommendedSongs = ({ recommendedSongs }) => {
                 size="large"
                 aria-label="youtube"
                 component={Link}
-                href={song.YOUTUBE}
+                href={song.youtube} // Assuming the property is 'youtube'
                 target="_blank"
                 color="error"
               >
@@ -108,6 +142,13 @@ const RecommendedSongs = ({ recommendedSongs }) => {
           </Card>
         </motion.div>
       ))}
+      <PlaylistModal
+        open={modalOpen}
+        onClose={handleCloseModal}
+        onAddToPlaylist={handleAddToPlaylist}
+        onCreateNewPlaylist={handleCreateNewPlaylist}
+        songData={selectedSong}
+      />
     </Box>
   );
 };

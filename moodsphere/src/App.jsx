@@ -10,7 +10,7 @@ import { auth } from './userAuth/firebase';
 import { AuthProvider } from './userAuth/AuthProvider';
 import { useAuthState } from "react-firebase-hooks/auth";
 import MoodStatus from './components/homePage/moodStatus';
-
+import Playlist from './components/playlists/playlist';
 function App() {
   const [user, loading] = useAuthState(auth);
   if (loading) {
@@ -30,6 +30,7 @@ function App() {
               <Route path="/home" element={<HomePage />} />
               <Route path="/artist" element={<Artist />} />
               <Route path="/status" element={<MoodStatus />} />
+              <Route path="/playlists" element={<Playlist />} />
             </>
           ) : (
             <>
