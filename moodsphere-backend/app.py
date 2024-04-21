@@ -26,6 +26,15 @@ class_names = ['Angry', 'Disgust', 'Fear', 'Happy', 'Neutral', 'Sad', 'Surprise'
 # Load your CSV data
 Music_Player = pd.read_csv("./app/static/Data/data_moods.csv")
 # Adjust the path as necessary
+def get_all_songs():
+    songs_ref = db.collection('tracks')  # 'tracks' is the Firestore collection name
+    try:
+        docs = songs_ref.stream()  # Fetch all documents in the collection
+        songs = [doc.to_dict() for doc in docs if doc.exists]
+        return songs
+    except Exception as e:
+        print("Error fetching songs:", str(e))
+        return []
 
 @app.route('/save-user', methods=['POST'])
 def save_user():
@@ -50,22 +59,23 @@ def save_user():
 
 # Function to recommend songs based on predicted class
 def recommend_songs(pred_class):
-    if pred_class == 'Disgust':
-        mood = 'Sad'
-    elif pred_class in ['Happy', 'Sad']:
-        mood = 'Happy'
-    elif pred_class in ['Fear', 'Angry']:
-        mood = 'Calm'
-    else:
-        mood = 'Energetic'
+    mood_map = {
+        'Disgust': 'Sad', 'Happy': 'Happy', 'Sad': 'Happy',
+        'Fear': 'Calm', 'Angry': 'Calm', 'Neutral': 'Energetic',
+        'Surprise': 'Energetic'
+    }
+    mood = mood_map.get(pred_class, 'Happy')
 
-    # Filter music based on predicted mood and sort by popularity
-    recommended_songs = Music_Player[Music_Player['mood'] == mood]
-    recommended_songs = recommended_songs.sort_values(by="popularity", ascending=False).head(5).to_dict('records')
+    try:
+        songs_ref = db.collection('tracks')
+        query_ref = songs_ref.where('mood', '==', mood).order_by('popularity', direction=firestore.Query.DESCENDING).limit(5)
+        docs = query_ref.stream()
 
-    return recommended_songs
-
-
+        recommended_songs = [doc.to_dict() for doc in docs if doc.exists]
+        return recommended_songs
+    except Exception as e:
+        print("Error recommending songs:", str(e))
+        return []
 # Define route for home page
 @app.route('/')
 def home():
@@ -174,7 +184,115 @@ def predict():
 
     except Exception as e:
         return jsonify({'error': str(e)}), 400
+    
+@app.route('/create-playlist', methods=['POST'])
+def create_playlist():
+    try:
+        data = request.get_json()
+        user_id = data['user_id']
+        playlist_name = data['playlist_name']
+        songs = data['songs']
 
+        # Firestore operation: add a new playlist document to the user's playlist subcollection
+        playlists_col = db.collection('playlists').document(user_id).collection('user_playlists')
+        new_playlist_ref = playlists_col.document()  # Let Firestore generate a unique ID
+        playlist_id = new_playlist_ref.id  # Retrieve the generated ID
 
+        new_playlist_ref.set({
+            'playlist_id': playlist_id,  # Store the ID within the document for easy retrieval
+            'playlist_name': playlist_name,
+            'songs': songs
+        })
+
+        return jsonify({'success': True, 'message': 'Playlist created successfully', 'playlist_id': playlist_id}), 200
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+    
+@app.route('/get-playlist', methods=['GET'])
+def get_playlist():
+    user_id = request.args.get('user_id')
+
+    if not user_id:
+        return jsonify({'error': 'User ID is required'}), 400
+
+    try:
+        # Fetch all playlists for the given user ID
+        playlists_col = db.collection('playlists').document(user_id).collection('user_playlists')
+        playlists = playlists_col.stream()
+
+        playlists_data = [doc.to_dict() for doc in playlists]
+        if playlists_data:
+            return jsonify({'success': True, 'data': playlists_data}), 200
+        else:
+            return jsonify({'success': False, 'message': 'No playlists found for the user'}), 404
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+    
+@app.route('/add-song-to-playlist', methods=['POST'])
+def add_song_to_playlist():
+    try:
+        data = request.get_json()
+        user_id = data['user_id']
+        playlist_id = data['playlist_id']
+        song_data = data['song_data']
+
+        # Firestore operation: Access the specific playlist
+        playlist_ref = db.collection('playlists').document(user_id).collection('user_playlists').document(playlist_id)
+        playlist = playlist_ref.get()
+
+        if playlist.exists:
+            playlist_data = playlist.to_dict()
+            # Check if the song is already in the playlist
+            if any(song['key'] == song_data['key'] for song in playlist_data.get('songs', [])):
+                return jsonify({'error': 'Song is already in the playlist'}), 400
+
+            # Add the new song to the playlist's songs list
+            updated_songs = playlist_data.get('songs', [])
+            updated_songs.append(song_data)
+            playlist_ref.update({'songs': updated_songs})
+
+            return jsonify({'success': True, 'message': 'Song added successfully'}), 200
+        else:
+            return jsonify({'error': 'Playlist not found'}), 404
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+    
+@app.route('/remove-song-from-playlist', methods=['DELETE'])
+def remove_song_from_playlist():
+    try:
+        user_id = request.args.get('user_id')
+        playlist_id = request.args.get('playlist_id')
+        song_key = request.args.get('key')
+
+        playlist_ref = db.collection('playlists').document(user_id).collection('user_playlists').document(playlist_id)
+        playlist = playlist_ref.get()
+
+        if playlist.exists:
+            playlist_data = playlist.to_dict()
+            updated_songs = [song for song in playlist_data.get('songs', []) if song['key'] != song_key]
+            playlist_ref.update({'songs': updated_songs})
+            return jsonify({'success': True, 'message': 'Song removed successfully', 'updatedSongs':updated_songs}), 200
+        else:
+            return jsonify({'error': 'Playlist not found'}), 404
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+ 
+@app.route('/delete-playlist', methods=['DELETE'])
+def delete_playlist():
+    try:
+        user_id = request.args.get('user_id')
+        playlist_id = request.args.get('playlist_id')
+
+        playlist_ref = db.collection('playlists').document(user_id).collection('user_playlists').document(playlist_id)
+        playlist_ref.delete()
+        return jsonify({'success': True, 'message': 'Playlist deleted successfully'}), 200
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500 
+ 
 if __name__ == '__main__':
     app.run(debug=True)
