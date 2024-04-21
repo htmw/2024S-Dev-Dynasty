@@ -4,18 +4,34 @@ import { auth } from "./firebase";
 
 const AuthContext = createContext();
 
-function AuthProvider({ children }) {
+const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(function (authUser) {
-      setUser(authUser);
+      if (authUser) {
+        // The user is logged in
+        setUser({
+          ...authUser,
+          isGuest: false
+        });
+      } else {
+        // The user is logged out
+        setUser(null);
+      }
     });
 
     return () => unsubscribe();
   }, []);
 
-  const value = { user };
+  const loginAsGuest = () => {
+    setUser({
+      displayName: "Guest",
+      email: "guest@example.com",
+      isGuest: true  // This should be true for guests
+    });
+  };
+  const value = { user, loginAsGuest };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

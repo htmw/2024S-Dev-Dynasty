@@ -24,25 +24,11 @@ function App() {
           <Route path="/" element={<LandingPage />} />
           <Route path="/signup" element={user ? <Navigate replace to="/home" /> : <Signup />} />
           <Route path="/login" element={user ? <Navigate replace to="/home" /> : <Login />} />
-          {/* Protected Routes */}
-          {user ? (
-            <>
-              <Route path="/home" element={<HomePage />} />
-              <Route path="/artist" element={<Artist />} />
-              <Route path="/status" element={<MoodStatus />} />
-              <Route path="/playlists" element={<Playlist />} />
-            </>
-          ) : (
-            <>
-              {/* Redirect user to Login if they are not logged in and trying to access a protected route */}
-              <Route path="/home" element={<Navigate replace to="/login" />} />
-              <Route path="/artist" element={<Navigate replace to="/login" />} />
-              <Route path="/status" element={<Navigate replace to="/login" />} />
-            </>
-          )}
-          {/* Catch-all Route */}
+          <Route path="/home" element={user ? <HomePage /> : <Navigate to="/login" />} />
+          <Route path="/artist" element={user ? <Artist /> : <Navigate to="/login" />} />
+          <Route path="/status" element={<MoodStatus />} />  // Accessible without login
           <Route path="*" element={<NotFound />} />
-        </Routes>
+        </Routes>    
       </Router>
     </AuthProvider>
   );
