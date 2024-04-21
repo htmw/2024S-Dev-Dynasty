@@ -36,6 +36,7 @@ import { useNavigate } from "react-router-dom";
 import Bubble from "../LandingPage/homebubble";
 import RecommendedSongs from "./recommendedSongs";
 import { logout } from "../../userAuth/firebase";
+import FeaturedPlayListIcon from '@mui/icons-material/FeaturedPlayList';
 import {
   Dialog,
   DialogTitle,
