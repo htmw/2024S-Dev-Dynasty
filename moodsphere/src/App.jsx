@@ -26,6 +26,7 @@ function App() {
           <Route path="/login" element={user ? <Navigate replace to="/home" /> : <Login />} />
           <Route path="/home" element={user ? <HomePage /> : <Navigate to="/login" />} />
           <Route path="/artist" element={user ? <Artist /> : <Navigate to="/login" />} />
+          <Route path="/playlists" element={user ? <Playlist /> : <Navigate to="/login" />} />
           <Route path="/status" element={<MoodStatus />} />  // Accessible without login
           <Route path="*" element={<NotFound />} />
         </Routes>    
