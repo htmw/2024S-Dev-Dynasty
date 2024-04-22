@@ -18,11 +18,9 @@ const Artist = () => {
     const handleMenu = (event) => {
         setAnchorEl(event.currentTarget);
     };
-
     const handleClose = () => {
         setAnchorEl(null);
     };
-
     useEffect(() => {
         const results = artists.filter(artist =>
             artist.toLowerCase().includes(searchQuery.toLowerCase())

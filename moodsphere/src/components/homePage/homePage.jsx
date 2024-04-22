@@ -17,8 +17,6 @@ import Bubble from '../LandingPage/homebubble';
 import RecommendedSongs from './recommendedSongs';
 import { logout } from '../../userAuth/firebase';
 import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from '@mui/material';
-
-
 const HomePage = () => {
     const navigate = useNavigate();
     const [anchorEl, setAnchorEl] = React.useState(null);

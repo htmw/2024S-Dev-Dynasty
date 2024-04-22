@@ -16,9 +16,6 @@ import { logout } from '../../userAuth/firebase';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import ReportIcon from '@mui/icons-material/Report';
-
-
-
 const MoodStatus = () => {
     const navigate = useNavigate();
     const [anchorEl, setAnchorEl] = React.useState(null);
