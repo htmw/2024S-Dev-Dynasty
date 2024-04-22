@@ -11,6 +11,7 @@ import { AuthProvider } from './userAuth/AuthProvider';
 import { useAuthState } from "react-firebase-hooks/auth";
 import MoodStatus from './components/homePage/moodStatus';
 import Playlist from './components/playlists/playlist';
+import Library from './components/library/library';
 function App() {
   const [user, loading] = useAuthState(auth);
   if (loading) {
@@ -27,6 +28,7 @@ function App() {
           <Route path="/home" element={user ? <HomePage /> : <Navigate to="/login" />} />
           <Route path="/artist" element={user ? <Artist /> : <Navigate to="/login" />} />
           <Route path="/playlists" element={user ? <Playlist /> : <Navigate to="/login" />} />
+          <Route path="/library" element={user ? <Library /> : <Navigate to="/login" />} />
           <Route path="/status" element={<MoodStatus />} />  // Accessible without login
           <Route path="*" element={<NotFound />} />
         </Routes>    

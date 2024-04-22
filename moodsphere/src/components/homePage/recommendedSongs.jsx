@@ -74,7 +74,7 @@ const RecommendedSongs = ({ recommendedSongs }) => {
       },
       zIndex: '2',
     }}>
-      {recommendedSongs.map((song, index) => (
+      {Array.isArray(recommendedSongs) && recommendedSongs.map((song, index) => (
         <motion.div
           key={index}
           initial={{ opacity: 0, y: -50 }}
