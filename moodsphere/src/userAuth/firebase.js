@@ -60,6 +60,7 @@ export const signInWithGoogle = async () => {
   }
 };
 
+export { db };
 export const sendPasswordReset = async (email) => {
   try {
     await sendPasswordResetEmail(auth, email);

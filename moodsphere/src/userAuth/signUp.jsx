@@ -23,7 +23,8 @@ const Signup = () => {
                 axios.post('http://localhost:5000/save-user', {
                     user_id: user.uid,
                     first_name: firstName,
-                    last_name: lastName
+                    last_name: lastName,
+                    email: user.email
                 })
                 .then(() => {
                     navigate("/login");
