@@ -8,7 +8,9 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { useNavigate } from 'react-router-dom';
 import Bubble from '../LandingPage/homebubble';
 import artists from './artistList.js'
-import RecommendedSongs from './recommendedSongs.jsx'
+import RecommendedSongs from './recommendedSongs.jsx';
+import FeaturedPlayListIcon from '@mui/icons-material/FeaturedPlayList';
+
 const Artist = () => {
     const navigate = useNavigate();
     const [anchorEl, setAnchorEl] = React.useState(null);
@@ -64,6 +66,7 @@ const Artist = () => {
         { text: 'Home', icon: <HomeIcon />, onClick: () => navigate('/home') },
         { text: 'Library', icon: <LibraryMusicIcon />, onClick: () => navigate('/library') },
         { text: 'Profile', icon: <AccountCircleIcon />, onClick: () => navigate('/profile') },
+        { text: 'Playlist', icon: <FeaturedPlayListIcon />, onClick: () => navigate('/playlists') },
     ];
 
     return (

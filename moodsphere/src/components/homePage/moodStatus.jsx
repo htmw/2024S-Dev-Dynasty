@@ -16,6 +16,11 @@ import { logout } from '../../userAuth/firebase';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import ReportIcon from '@mui/icons-material/Report';
+import FeaturedPlayListIcon from '@mui/icons-material/FeaturedPlayList';
+import Tooltip from '@mui/material/Tooltip';
+import { useAuth } from '../../userAuth/AuthProvider';
+import { AuthProvider } from '../../userAuth/AuthProvider';
+
 const MoodStatus = () => {
     const navigate = useNavigate();
     const [anchorEl, setAnchorEl] = React.useState(null);
@@ -26,6 +31,9 @@ const MoodStatus = () => {
     const [image, setImage] = useState(null);
     const fileInputRef = useRef(null);
     const [showInfoText, setShowInfoText] = useState(true);
+    const { user } = useAuth(); // Access the user object
+    const isGuest = user?.isGuest; // Determine if the logged in user is a guest
+
     const handleFileUpload = (event) => {
         const file = event.target.files[0];
         if (file) {
@@ -128,9 +136,10 @@ const MoodStatus = () => {
     };
 
     const menuItems = [
-        { text: 'Home', icon: <HomeIcon />, onClick: () => navigate('/home') },
-        { text: 'Library', icon: <LibraryMusicIcon />, onClick: () => navigate('/library') },
-        { text: 'Profile', icon: <AccountCircleIcon />, onClick: () => navigate('/profile') },
+        { text: 'Playlist', icon: <FeaturedPlayListIcon />, onClick: () => navigate('/playlists'), disabled: isGuest },
+        { text: 'Home', icon: <HomeIcon />, onClick: () => navigate('/home'), disabled: isGuest },
+        { text: 'Library', icon: <LibraryMusicIcon />, onClick: () => navigate('/library'), disabled: isGuest },
+        { text: 'Profile', icon: <AccountCircleIcon />, onClick: () => navigate('/profile'), disabled: isGuest },
     ];
     
 
@@ -165,6 +174,7 @@ const MoodStatus = () => {
                         onClose={handleClose}
                     >
                         <MenuItem onClick={userLogOut}>Logout</MenuItem>
+                       
                     </Menu>
                     <Typography variant="h6" sx={{ flexGrow: 1, color: '#b71c1c' }}>
                     MoodSphere
@@ -228,6 +238,7 @@ const MoodStatus = () => {
                                 <Button
                                     startIcon={<CameraAltIcon sx={{ color: '#b71c1c' }} />}
                                     sx={{ color: 'white' }}
+                                    
                                 >
                                     Camera
                                 </Button>
@@ -249,13 +260,36 @@ const MoodStatus = () => {
                         </Fade>
                     </Modal>
                     <List>
-                        {menuItems.map((item, index) => (
-                            <ListItem button key={index} onClick={item.onClick} sx={{ '&:hover': { bgcolor: '#757575' } }}>
-                                <ListItemIcon sx={{ color: 'white' }}>{item.icon}</ListItemIcon>
-                                <ListItemText primary={item.text} />
-                            </ListItem>
-                        ))}
-                    </List>
+  {menuItems.map((item, index) => (
+    <Tooltip 
+      key={index} 
+      title={isGuest ? "This feature is not available for guest users." : ""}
+      placement="right"
+    >
+      <div> {/* Wrap the ListItem in a div because Tooltip children must be able to hold a ref */}
+        <ListItem 
+          button 
+          onClick={() => {
+            if (!isGuest) {
+              item.onClick();
+            }
+          }}
+          sx={{ 
+            '&:hover': { 
+              bgcolor: !isGuest ? '#757575' : 'transparent',
+            },
+            opacity: !isGuest ? 1 : 0.5,
+            pointerEvents: isGuest ? 'none' : 'auto',
+          }}
+        >
+          <ListItemIcon sx={{ color: 'white' }}>{item.icon}</ListItemIcon>
+          <ListItemText primary={item.text} />
+        </ListItem>
+      </div>
+    </Tooltip>
+  ))}
+</List>
+
                     <Box mt="auto" py={2}>
                         <Divider sx={{ bgcolor: 'gray' }} />
                         <List dense>
