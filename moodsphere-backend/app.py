@@ -294,5 +294,34 @@ def delete_playlist():
     except Exception as e:
         return jsonify({'error': str(e)}), 500 
  
+@app.route('/search', methods=['POST'])
+def search():
+    query = request.json.get('query', '').lower().strip()  # Normalize query to lowercase
+    if not query:
+        return jsonify({'error': 'No search query provided'}), 400
+
+    # Search for matching songs or artists
+    results = search_songs_and_artists(query)
+    return jsonify({'matches': results})
+
+def search_songs_and_artists(query):
+    # Perform a single scan to fetch all entries and filter manually for demo purposes
+    # This is not efficient for large datasets
+    songs_ref = db.collection('tracks')
+    try:
+        docs = songs_ref.stream()
+        results = []
+        for doc in docs:
+            if len(results) >= 30:
+                break  # Stop processing once we have 30 items
+            song_data = doc.to_dict()
+            # Check both the artist and name fields for the query
+            if query in song_data.get('name', '').lower() or query in song_data.get('artist', '').lower():
+                results.append(song_data)
+        return results
+    except Exception as e:
+        print(f"Failed to fetch songs: {str(e)}")
+        return []
+
 if __name__ == '__main__':
     app.run(debug=True)

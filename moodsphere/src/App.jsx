@@ -13,6 +13,8 @@ import MoodStatus from './components/homePage/moodStatus';
 import Playlist from './components/playlists/playlist';
 import Profile from './components/Profile/Profile';
 import { ToastContainer } from 'react-toastify';
+import Library from './components/library/library';
+
 function App() {
   const [user, loading] = useAuthState(auth);
   if (loading) {
@@ -32,6 +34,7 @@ function App() {
           <Route path="/profile" element={<Profile />} />
           <Route path="/artist" element={user ? <Artist /> : <Navigate to="/login" />} />
           <Route path="/playlists" element={user ? <Playlist /> : <Navigate to="/login" />} />
+          <Route path="/library" element={user ? <Library /> : <Navigate to="/login" />} />
           <Route path="/status" element={<MoodStatus />} />  // Accessible without login
           <Route path="*" element={<NotFound />} />
         </Routes>    
