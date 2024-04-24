@@ -173,7 +173,28 @@ const Profile = () => {
       onClick: () => navigate("/playlists"),
     },
   ];
-
+  const dialogTitleStyle = {
+    backgroundColor: '#121212',
+    color: 'white',
+    padding: '16px 24px', // Adjust padding as needed
+    borderBottom: '1px solid #b71c1c' // Add a border bottom for visual separation
+  };
+  
+  const dialogContentStyle = {
+    backgroundColor: '#1c1c1c',
+    color: 'white',
+    paddingTop: '24px', // Space between title and content
+    paddingBottom: '24px', // Space between content and actions
+    paddingLeft: '24px', // Inner padding
+    paddingRight: '24px', // Inner padding
+    // You can add more styling here
+  };
+  
+  const dialogActionsStyle = {
+    padding: '8px 24px', // Adjust padding as needed
+    borderTop: '1px solid #b71c1c' // Add a border top for visual separation
+  };
+  
   const paperStyle = {
     padding: "20px",
     margin: "20px auto",
@@ -451,77 +472,93 @@ const Profile = () => {
         </Container>
 
         <Dialog
-          open={open}
-          onClose={handleClose}
-          sx={{
-            "& .MuiDialog-paper": {
-              backgroundColor: "#1c1c1c", // Dark background for the dialog
-              color: "white", // Text color
-              p: 3, // Padding inside the dialog
-            },
-            "& .MuiInputBase-root": {
-              color: "white", // Text color for input
-            },
-            "& .MuiOutlinedInput-notchedOutline": {
-              borderColor: "#b71c1c", // Border color for text fields
-            },
-            "& .MuiButton-root": {
-              color: "white", // Text color for buttons
-              borderColor: "#b71c1c", // Border color for outlined buttons if any
-            },
-            "& .MuiButton-contained": {
-              backgroundColor: "#b71c1c", // Background color for contained buttons
-              "&:hover": {
-                backgroundColor: "#f44336", // Hover color for contained buttons
-              },
-            },
-            "& .MuiDialogActions-root": {
-              borderTop: "1px solid #b71c1c", // Border top for the actions area
-            },
-          }}
-        >
-          <DialogTitle>Edit Profile</DialogTitle>
-          <DialogContent>
+  open={open}
+  onClose={handleClose}
+  PaperProps={{
+    style: {
+      backgroundColor: 'transparent', // To make the dialog background transparent
+      boxShadow: 'none', // Remove shadow if preferred
+    },
+  }}
+>
+
+<DialogTitle sx={dialogTitleStyle}>Edit Profile</DialogTitle>
+  <DialogContent sx={dialogContentStyle}>
+
             {/* Form fields to edit the profile */}
             <TextField
-              autoFocus
-              margin="dense"
-              id="firstName"
-              label="First Name"
-              type="text"
-              fullWidth
-              variant="outlined"
-              name="first_name"
-              value={profile.first_name || ""}
-              onChange={handleChange}
-              InputLabelProps={{
-                style: { color: "#b71c1c" }, // Style for the input labels
-              }}
-            />
-            <TextField
-              margin="dense"
-              id="lastName"
-              label="Last Name"
-              type="text"
-              fullWidth
-              variant="outlined"
-              name="last_name"
-              value={profile.last_name || ""}
-              onChange={handleChange}
-              InputLabelProps={{
-                style: { color: "#b71c1c" }, // Style for the input labels
-              }}
-            />
+  autoFocus
+  margin="dense"
+  id="firstName"
+  label="First Name"
+  type="text"
+  fullWidth
+  variant="outlined"
+  name="first_name"
+  value={profile.first_name || ''}
+  onChange={handleChange}
+  InputLabelProps={{
+    style: { color: '#b71c1c' }, // Keeps the label color
+  }}
+  InputProps={{
+    style: { color: 'white' }, // Sets the input text color to white
+  }}
+  sx={{
+    '& .MuiOutlinedInput-root': {
+      '& fieldset': {
+        borderColor: '#b71c1c', // Keeps the border color
+      },
+      '&:hover fieldset': {
+        borderColor: '#f44336', // Color for hover state
+      },
+      '&.Mui-focused fieldset': {
+        borderColor: '#b71c1c', // Color for focus state
+      },
+    },
+  }}
+/>
+
+<TextField
+  margin="dense"
+  id="lastName"
+  label="Last Name"
+  type="text"
+  fullWidth
+  variant="outlined"
+  name="last_name"
+  value={profile.last_name || ''}
+  onChange={handleChange}
+  InputLabelProps={{
+    style: { color: '#b71c1c' }, // Keeps the label color
+  }}
+  InputProps={{
+    style: { color: 'white' }, // Sets the input text color to white
+  }}
+  sx={{
+    '& .MuiOutlinedInput-root': {
+      '& fieldset': {
+        borderColor: '#b71c1c', // Keeps the border color
+      },
+      '&:hover fieldset': {
+        borderColor: '#f44336', // Color for hover state
+      },
+      '&.Mui-focused fieldset': {
+        borderColor: '#b71c1c', // Color for focus state
+      },
+    },
+  }}
+/>
           </DialogContent>
-          <DialogActions>
-            <Button onClick={handleClose} color="primary">
-              Cancel
-            </Button>
-            <Button onClick={handleSave} color="primary">
-              Save
-            </Button>
-          </DialogActions>
-        </Dialog>
+          <DialogActions sx={dialogActionsStyle}>
+    <Button onClick={handleClose} sx={{ color: 'white', backgroundColor: '#b71c1c', '&:hover': { backgroundColor: '#f44336' } }}>
+      Cancel
+    </Button>
+    <Button onClick={handleSave} sx={{ color: 'white', backgroundColor: '#b71c1c', '&:hover': { backgroundColor: '#f44336' } }}>
+      Save
+    </Button>
+  </DialogActions>
+</Dialog>
+
       </Box>
     </>
   );
