@@ -242,10 +242,11 @@ const Artist = () => {
                         boxSizing: 'border-box',
                     }}
                 >
-                    <RecommendedSongs recommendedSongs={predictedSongs} />
-                </Box>
+                    
                 <Box sx={{ position: 'relative' }}>
-                    {loading && <CircularProgress sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }} />}
+                    {loading && <CircularProgress sx={{ position: 'absolute', top: '50%', bottom: '100%', left: '50%', transform: 'translate(-90%, -90%)', color: "red", size: '80%', borderImageWidth: '90' }} />}
+                </Box>
+                    <RecommendedSongs recommendedSongs={predictedSongs} />
                 </Box>
             </Box>
             </div>
