@@ -10,7 +10,7 @@ import firebase_admin
 from firebase_admin import credentials, firestore
 
 # Initialize Firebase Admin
-cred = credentials.Certificate('./moodsphere-dev-dynasty-firebase-adminsdk-ycn9w-4ec19c3952.json')
+cred = credentials.Certificate('../Scraches/moodsphere-dev-dynasty-firebase-adminsdk-ycn9w-40b74b27a7.json')
 firebase_admin.initialize_app(cred)
 db = firestore.client()
 
