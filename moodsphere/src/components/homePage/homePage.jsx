@@ -17,59 +17,23 @@ import Bubble from '../LandingPage/homebubble';
 import RecommendedSongs from './recommendedSongs';
 import { logout } from '../../userAuth/firebase';
 import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from '@mui/material';
-import React, { useRef, useState } from "react";
-import {
-  Box,
-  Button,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-  Typography,
-  AppBar,
-  Toolbar,
-  CssBaseline,
-  Link,
-  Divider,
-  useTheme,
-  IconButton,
-  Avatar,
-  Menu,
-  MenuItem,
-  TextField,
-  InputAdornment,
-} from "@mui/material";
-import HomeIcon from "@mui/icons-material/Home";
-import MenuIcon from "@mui/icons-material/Menu";
-import SearchIcon from "@mui/icons-material/Search";
-import LibraryMusicIcon from "@mui/icons-material/LibraryMusic";
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import PhotoCameraIcon from "@mui/icons-material/PhotoCamera";
-import PersonSearchIcon from "@mui/icons-material/PersonSearch";
-import MoodIcon from "@mui/icons-material/Mood";
-import EmojiEmotionsIcon from "@mui/icons-material/EmojiEmotions";
-import { Modal, Backdrop, Fade, Paper } from "@mui/material";
-import CameraAltIcon from "@mui/icons-material/CameraAlt";
-import InsertDriveFileIcon from "@mui/icons-material/InsertDriveFile";
-import { useNavigate } from "react-router-dom";
-import Bubble from "../LandingPage/homebubble";
-import RecommendedSongs from "./recommendedSongs";
-import { logout } from "../../userAuth/firebase";
 import FeaturedPlayListIcon from '@mui/icons-material/FeaturedPlayList';
-import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogContentText,
-  DialogActions,
-} from "@mui/material";
+import ReportIcon from '@mui/icons-material/Report';
 
+ 
+// Function to handle report action
+ const handleReport = () => {
+  // Implement report functionality here
+  console.log("Report action triggered");
+};
 const HomePage = () => {
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [openModal, setOpenModal] = React.useState(false);
   const [openDialog, setOpenDialog] = useState(false);
   const [dialogContent, setDialogContent] = useState(""); // To differentiate between Legal and Privacy
+  const [reportText, setReportText] = useState(""); // State to manage report text
+
   const handleDialogOpen = (content) => {
     setDialogContent(content);
     setOpenDialog(true);
@@ -97,6 +61,8 @@ const HomePage = () => {
     logout();
     navigate("/");
   };
+
+
   // AppBar styles
   const appBarStyle = {
     backgroundColor: "#121212", // Dark background
@@ -104,12 +70,18 @@ const HomePage = () => {
     boxShadow:
       "0 2px 4px -1px rgba(183, 28, 28, 0.2), 0 4px 5px 0 rgba(183, 28, 28, 0.14), 0 1px 10px 0 rgba(183, 28, 28, 0.12)", // Red-toned shadow for depth
   };
+  const handleReportSubmit = () => {
+    // You can implement report submission here
+    console.log("Report submitted:", reportText);
+    handleCloseModal();
+  };
 
     const menuItems = [
         { text: 'Home', icon: <HomeIcon />, onClick: () => navigate('/home') },
         { text: 'Library', icon: <LibraryMusicIcon />, onClick: () => navigate('/library') },
         { text: 'Profile', icon: <AccountCircleIcon />, onClick: () => navigate('/profile') },
         { text: 'Your Playlist', icon: <FeaturedPlayListIcon />, onClick: () => navigate('/playlists') },
+        { text: 'Report', icon: <ReportIcon />, onClick: handleOpenModal },
     ];
   const actionItems = [
     {
@@ -133,6 +105,10 @@ const HomePage = () => {
       onClick: () => navigate("/status"),
     },
   ];
+ 
+
+
+
 
   return (
     <>
@@ -184,6 +160,37 @@ const HomePage = () => {
         </Toolbar>
       </AppBar>
 
+
+
+      <Dialog open={openModal} onClose={handleCloseModal}>
+        <DialogTitle>Report</DialogTitle>
+        <DialogContent>
+          <DialogContentText> 
+            Please describe the issue:
+          </DialogContentText>
+          <TextField
+            autoFocus
+            margin="dense"
+            id="report-text"
+            label="Report"
+            fullWidth
+            multiline
+            rows={4}
+            variant="outlined"
+            value={reportText}
+            onChange={(e) => setReportText(e.target.value)}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseModal}>Cancel</Button>
+          <Button onClick={handleReportSubmit} color="primary">Submit</Button>
+        </DialogActions>
+      </Dialog>
+
+      
+
+
+
       <div
         style={{
           display: "flex",
@@ -221,6 +228,8 @@ const HomePage = () => {
           <Box mt="auto" py={2}>
             <Divider sx={{ bgcolor: "gray" }} />
             <List dense>
+
+
               <ListItem
                 onClick={() => handleDialogOpen("privacy")}
                 sx={{ py: 1, px: 2 }}

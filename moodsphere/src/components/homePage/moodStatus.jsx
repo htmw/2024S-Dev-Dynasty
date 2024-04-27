@@ -20,7 +20,13 @@ import FeaturedPlayListIcon from '@mui/icons-material/FeaturedPlayList';
 import Tooltip from '@mui/material/Tooltip';
 import { useAuth } from '../../userAuth/AuthProvider';
 import { AuthProvider } from '../../userAuth/AuthProvider';
+import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from '@mui/material';
 
+// Function to handle report action
+const handleReport = () => {
+    // Implement report functionality here
+    console.log("Report action triggered");
+  };
 const MoodStatus = () => {
     const navigate = useNavigate();
     const [anchorEl, setAnchorEl] = React.useState(null);
@@ -33,6 +39,7 @@ const MoodStatus = () => {
     const [showInfoText, setShowInfoText] = useState(true);
     const { user } = useAuth(); // Access the user object
     const isGuest = user?.isGuest; // Determine if the logged in user is a guest
+    const [reportText, setReportText] = useState(""); // State to store the report text
 
     const handleFileUpload = (event) => {
         const file = event.target.files[0];
@@ -73,22 +80,6 @@ const MoodStatus = () => {
         logout();
         navigate('/');
     }
-        // Report function
-        const handleReport = () => {
-            // Here you can implement the logic to show a report form or report dialog
-            console.log("Report button clicked");
-            // For now, let's just show a toast message
-            toast.info("Reported!", {
-                position: "top-center",
-                autoClose: 2000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-            });
-        };
-
     const predictSongs = async () => {
         console.log(uploadedImage)
         if (!image) {
@@ -134,13 +125,18 @@ const MoodStatus = () => {
         color: '#b71c1c', // Red accent text
         boxShadow: '0 2px 4px -1px rgba(183, 28, 28, 0.2), 0 4px 5px 0 rgba(183, 28, 28, 0.14), 0 1px 10px 0 rgba(183, 28, 28, 0.12)', // Red-toned shadow for depth
     };
-
     const menuItems = [
         { text: 'Playlist', icon: <FeaturedPlayListIcon />, onClick: () => navigate('/playlists'), disabled: isGuest },
         { text: 'Home', icon: <HomeIcon />, onClick: () => navigate('/home'), disabled: isGuest },
         { text: 'Library', icon: <LibraryMusicIcon />, onClick: () => navigate('/library'), disabled: isGuest },
         { text: 'Profile', icon: <AccountCircleIcon />, onClick: () => navigate('/profile'), disabled: isGuest },
+        { text: 'Report', icon: <ReportIcon />, onClick: handleOpenModal },
     ];
+
+    const handleReportSubmit = () => {
+        console.log("Report submitted:", reportText);
+        handleCloseModal();
+    };
     
 
     return (
@@ -197,8 +193,37 @@ const MoodStatus = () => {
                         </IconButton>
                     </Toolbar>
                 </AppBar>
+
+                 {/* Dialog for Report */}
+                 <Dialog open={openModal} onClose={handleCloseModal}>
+                    <DialogTitle>Report</DialogTitle>
+                    <DialogContent>
+                        <DialogContentText>
+                            Please describe the issue:
+                        </DialogContentText>
+                        <TextField
+                            autoFocus
+                            margin="dense"
+                            id="report-text"
+                            label="Report"
+                            fullWidth
+                            multiline
+                            rows={4}
+                            variant="outlined"
+                            value={reportText}
+                            onChange={(e) => setReportText(e.target.value)}
+                        />
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={handleCloseModal}>Cancel</Button>
+                        <Button onClick={handleReportSubmit} color="primary">Submit</Button>
+                    </DialogActions>
+                </Dialog>
+                
             <div style={{ display: 'flex', height: '91.1vh', backgroundColor: '#121212' }}>
                 <CssBaseline />
+
+                
                 <Box
                     sx={{
                         width: 240,
