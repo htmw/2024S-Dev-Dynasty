@@ -99,7 +99,7 @@ const HomePage = () => {
       onClick: () => navigate("/genre"),
     },
     {
-      text: "Find Artist By Artist",
+      text: "Find Music By Artist",
       icon: <PersonSearchIcon />,
       onClick: () => navigate("/artist"),
     },
