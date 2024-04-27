@@ -12,6 +12,7 @@ import {
 } from "@mui/material";
 import { db } from "../../userAuth/firebase";
 import { useAuth } from "../../userAuth/AuthProvider"; // Auth context
+import { logout } from '../../userAuth/firebase';
 import { collection, getDocs } from "firebase/firestore";
 import { doc, updateDoc } from "firebase/firestore";
 // In your Profile component
@@ -103,6 +104,7 @@ const Profile = () => {
         await updateDoc(userDocRef, {
           first_name: profile.first_name,
           last_name: profile.last_name,
+          email:user.email
           // any other fields...
         });
         toast.success("Profile Saved Successfully", {
@@ -284,7 +286,7 @@ const Profile = () => {
             </ListItemIcon>
             <ListItemText primary="Playlists" />
           </ListItem>
-          <Box sx={{ paddingTop: "450px" }}>
+          <Box sx={{ paddingTop: "910px" }}>
             <Divider sx={{ bgcolor: "gray" }} />
             <ListItem
               onClick={() => handleDialogOpen("privacy")}
@@ -455,9 +457,9 @@ const Profile = () => {
             <Typography variant="h6" style={textStyle}>
               Last Name: {profile?.last_name || "N/A"}
             </Typography>
-            {/* <Typography variant="h6" style={textStyle}>
-            Email: {profile?.email || 'N/A'}
-          </Typography> */}
+            <Typography variant="h6" style={textStyle}>
+            Email: {user?.email || 'N/A'}
+          </Typography>
             <Button
               variant="contained"
               sx={{
