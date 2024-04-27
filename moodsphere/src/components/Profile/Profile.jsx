@@ -14,7 +14,7 @@ import { db } from "../../userAuth/firebase";
 import { useAuth } from "../../userAuth/AuthProvider"; // Auth context
 import { logout } from '../../userAuth/firebase';
 import { collection, getDocs } from "firebase/firestore";
-import { doc, updateDoc } from "firebase/firestore";
+import { doc, updateDoc, setDoc } from "firebase/firestore";
 // In your Profile component
 import { toast } from "react-toastify";
 // In your App.js or main component file
@@ -46,7 +46,9 @@ import FeaturedPlayListIcon from "@mui/icons-material/FeaturedPlayList";
 
 const Profile = () => {
   const { user } = useAuth(); // Ensure you have the user object
-  const [profile, setProfile] = useState(null); // Define 'profile' state here
+  const [profile, setProfile] = useState({ first_name: '',
+  last_name: '',
+  email: '',}); // Define 'profile' state here
   const [open, setOpen] = useState(false);
   const [avatarAnchorEl, setAvatarAnchorEl] = useState(null);
   const [openDialog, setOpenDialog] = useState(false);
@@ -71,7 +73,11 @@ const Profile = () => {
       if (matchedProfile) {
         setProfile(matchedProfile); // Set the profile state to the matched user profile
       } else {
-        console.log("No profile matched the logged-in user.");
+        setProfile({
+          name: user.name,
+          last_name: '',
+          email: user.email, // Use email from the authentication object
+        });
       }
     };
 
@@ -101,12 +107,12 @@ const Profile = () => {
     if (user && user.uid) {
       const userDocRef = doc(db, "users", user.uid);
       try {
-        await updateDoc(userDocRef, {
+        // Use setDoc with merge:true to create the document if it doesn't exist
+        await setDoc(userDocRef, {
           first_name: profile.first_name,
           last_name: profile.last_name,
-          email:user.email
-          // any other fields...
-        });
+          email: user.email // This assumes email should be updated as well
+        }, { merge: true }); // This will create the document if it doesn't exist
         toast.success("Profile Saved Successfully", {
           position: "bottom-center",
           autoClose: 5000,
@@ -131,6 +137,7 @@ const Profile = () => {
       }
     }
   };
+  
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -447,31 +454,46 @@ const Profile = () => {
         </List>
 
         <Container>
-          <Paper style={paperStyle} elevation={4}>
-            <Typography variant="h4" gutterBottom>
-              Profile
-            </Typography>
-            <Typography variant="h6" style={textStyle}>
-              First Name: {profile?.first_name || "N/A"}
-            </Typography>
-            <Typography variant="h6" style={textStyle}>
-              Last Name: {profile?.last_name || "N/A"}
-            </Typography>
-            <Typography variant="h6" style={textStyle}>
-            Email: {user?.email || 'N/A'}
+        <Paper style={paperStyle} elevation={4}>
+          <Typography variant="h4" gutterBottom>
+            Profile
           </Typography>
-            <Button
-              variant="contained"
-              sx={{
-                backgroundColor: "red",
-                "&:hover": { backgroundColor: "darkred" },
-              }}
-              onClick={handleClickOpen}
-            >
-              Edit Profile
-            </Button>
-          </Paper>
-        </Container>
+          {/* Conditionally render first name and last name fields */}
+          {user && user.providerData && user.providerData[0].providerId === 'google.com' ? (
+            <Typography variant="h6" style={textStyle}>
+              Email: {user?.email || 'Please Enter Your Email Address'}
+            </Typography>
+          ) : (
+            <>
+              <Typography variant="h6" style={textStyle}>
+                First Name: {profile?.first_name || ""}
+              </Typography>
+              <Typography variant="h6" style={textStyle}>
+                Last Name: {profile?.last_name || ""}
+              </Typography>
+              <Typography variant="h6" style={textStyle}>
+              Email: {user?.email || 'Please Enter Your Email Address'}
+            </Typography>
+            </>
+          )}
+          {/* Button to edit profile */}
+          <Button
+  variant="contained"
+  disabled={user && user.providerData && user.providerData[0].providerId === 'google.com'}
+  sx={{
+    backgroundColor: "red",
+    color: "white", // Set the text color to white
+    "&:hover": { backgroundColor: "darkred" },
+    "&.Mui-disabled": { // Conditional style for disabled state
+      color: "rgba(255, 255, 255, 0.5)", // Set text color to a lighter shade of white
+    },
+  }}
+  onClick={handleClickOpen}
+>
+  Edit Profile
+</Button>
+        </Paper>
+      </Container>
 
         <Dialog
   open={open}
@@ -498,7 +520,8 @@ const Profile = () => {
   variant="outlined"
   name="first_name"
   value={profile.first_name || ''}
-  onChange={handleChange}
+  onChange={(e) => setProfile({ ...profile, first_name: e.target.value })}
+  placeholder="Please Enter Your First Name"
   InputLabelProps={{
     style: { color: '#b71c1c' }, // Keeps the label color
   }}
@@ -530,6 +553,7 @@ const Profile = () => {
   name="last_name"
   value={profile.last_name || ''}
   onChange={handleChange}
+  placeholder="Please Enter Your Last Name"
   InputLabelProps={{
     style: { color: '#b71c1c' }, // Keeps the label color
   }}
