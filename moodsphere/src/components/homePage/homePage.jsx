@@ -19,6 +19,7 @@ import {
   MenuItem,
   TextField,
   InputAdornment,
+  useMediaQuery
 } from "@mui/material";
 import HomeIcon from "@mui/icons-material/Home";
 import MenuIcon from "@mui/icons-material/Menu";
@@ -99,7 +100,7 @@ const HomePage = () => {
       onClick: () => navigate("/genre"),
     },
     {
-      text: "Find Music By Artist",
+      text: "Find Artist By Artist",
       icon: <PersonSearchIcon />,
       onClick: () => navigate("/artist"),
     },
@@ -114,6 +115,10 @@ const HomePage = () => {
       onClick: () => navigate("/status"),
     },
   ];
+  const theme = useTheme();
+  const breakpoints = ["sm", "md", "lg", "xl"];
+  const matches = breakpoints.map((bp) => useMediaQuery(`(min-width:${theme.breakpoints.values[bp]}px)`));
+
 
   return (
     <>
@@ -164,7 +169,7 @@ const HomePage = () => {
           </IconButton>
         </Toolbar>
       </AppBar>
-
+    
       <div
         style={{
           display: "flex",
@@ -173,54 +178,52 @@ const HomePage = () => {
         }}
       >
         <CssBaseline />
-
-        <Box
-          sx={{
-            width: 240,
-            flexShrink: 0,
-            bgcolor: "black",
-            display: "flex",
-            flexDirection: "column",
-            color: "white",
-            overflowX: "hidden",
-            borderRight: "1px solid #b71c1c",
-          }}
-        >
-          <List>
-            {menuItems.map((item, index) => (
-              <ListItem
-                button
-                key={index}
-                onClick={item.onClick}
-                sx={{ "&:hover": { bgcolor: "#757575" } }}
-              >
+      <Box
+      sx={{
+        width: 240,
+        flexShrink: 0,
+        bgcolor: "black",
+        display: "flex",
+        flexDirection: "column",
+        color: "white",
+        overflowX: "hidden",
+        borderRight: "1px solid #b71c1c",
+        "@media (max-width:600px)": {
+          width: 100, // Adjusted width for smaller screens
+        }
+      }}
+    >
+      <List>
+        {menuItems.map((item, index) => (
+          <ListItem
+            button
+            key={index}
+            onClick={item.onClick}
+            sx={{ "&:hover": { bgcolor: "#757575" } }}
+          >
+            {matches[0] ? (
+              <>
                 <ListItemIcon sx={{ color: "white" }}>{item.icon}</ListItemIcon>
                 <ListItemText primary={item.text} />
-              </ListItem>
-            ))}
-          </List>
-          <Box mt="auto" py={2}>
-            <Divider sx={{ bgcolor: "gray" }} />
-            <List dense>
-              <ListItem
-                onClick={() => handleDialogOpen("privacy")}
-                sx={{ py: 1, px: 2 }}
-              >
-                <Link color="inherit" underline="hover">
-                  Privacy Policy
-                </Link>
-              </ListItem>
-              <ListItem
-                onClick={() => handleDialogOpen("legal")}
-                sx={{ py: 1, px: 2 }}
-              >
-                <Link color="inherit" underline="hover">
-                  Legal
-                </Link>
-              </ListItem>
-            </List>
-          </Box>
-        </Box>
+              </>
+            ) : (
+              <IconButton sx={{ color: "white" }}>{item.icon}</IconButton>
+            )}
+          </ListItem>
+        ))}
+      </List>
+      <Box mt="auto" py={2}>
+        <Divider sx={{ bgcolor: "gray" }} />
+        <List dense>
+          <ListItem onClick={() => handleDialogOpen("privacy")} sx={{ py: 1, px: 2 }}>
+            <Link color="inherit" underline="hover">Privacy Policy</Link>
+          </ListItem>
+          <ListItem onClick={() => handleDialogOpen("legal")} sx={{ py: 1, px: 2 }}>
+            <Link color="inherit" underline="hover">Legal</Link>
+          </ListItem>
+        </List>
+      </Box>
+    </Box>
         <Dialog
           open={openDialog}
           onClose={handleDialogClose}
