@@ -7,15 +7,15 @@ import LibraryMusicIcon from '@mui/icons-material/LibraryMusic';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { useNavigate } from 'react-router-dom';
 import Bubble from '../LandingPage/homebubble';
-import artists from './artistList.js'
+import genres from './genreList.js'
 import RecommendedSongs from './recommendedSongs.jsx';
 import FeaturedPlayListIcon from '@mui/icons-material/FeaturedPlayList';
 
-const Artist = () => {
+const Genre = () => {
     const navigate = useNavigate();
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [searchQuery, setSearchQuery] = useState('');
-    const [filteredArtists, setFilteredArtists] = useState(artists);
+    const [filteredGenres, setFilteredGenres] = useState(genres);
     const [predictedSongs, setPredictedSongs] = useState([]);
     const [loading, setLoading] = useState(false); // New state for loading indicator
 
@@ -28,25 +28,25 @@ const Artist = () => {
     };
 
     useEffect(() => {
-        const results = artists.filter(artist =>
-            artist.toLowerCase().includes(searchQuery.toLowerCase())
+        const results = genres.filter(genre =>
+            genre.toLowerCase().includes(searchQuery.toLowerCase())
         );
-        setFilteredArtists(results);
+        setFilteredGenres(results);
     }, [searchQuery]);
 
     const handleSearchChange = (event) => {
         setSearchQuery(event.target.value);
     };
 
-    const fetchArtistInfo = async (artistName) => {
+    const fetchGenreInfo = async (genreName) => {
         setLoading(true); // Set loading state to true before API call
         try {
-            const response = await fetch('http://localhost:5000/songs-by-artist', {
+            const response = await fetch('http://localhost:5000/songs-by-genre', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ artist_name: artistName }),
+                body: JSON.stringify({ genre_name: genreName }),
             });
     
             if (!response.ok) {
@@ -57,7 +57,7 @@ const Artist = () => {
             console.log(data); 
             setPredictedSongs(data.songs); 
         } catch (error) {
-            console.error("Failed to fetch artist info:", error);
+            console.error("Failed to fetch genre info:", error);
             // Handle errors, e.g., by setting an error state or displaying a notification
         } finally {
             setLoading(false); // Set loading state to false after API call completes
@@ -166,7 +166,9 @@ const Artist = () => {
                         </Box>
                     </Box>
                 </Box>
-                <Box sx={{ display: 'flex', height: 'calc(100vh - 64px)'}}>
+                
+                {/* Width Added */}
+                <Box sx={{ display: 'flex', height: 'calc(100vh - 64px)', width: 'calc(63vh - 64px)'}}>
                 <Box
                     sx={{
                         width: '50%',
@@ -178,13 +180,13 @@ const Artist = () => {
                     }}
                 >
                     <Typography variant="h6" color="inherit" gutterBottom>
-                        Artists
+                        Genres
                     </Typography>
                     <Divider sx={{ bgcolor: '#b71c1c', marginBottom: '20px' }} />
                         <TextField
                             fullWidth
                             variant="outlined"
-                            placeholder="Search Artists..."
+                            placeholder="Search Genres..."
                             value={searchQuery}
                             onChange={handleSearchChange}
                             InputProps={{
@@ -222,12 +224,12 @@ const Artist = () => {
                             }}
                         />
                     <List>
-                        {filteredArtists.map((artist, index) => (
+                        {filteredGenres.map((genre, index) => (
                             <ListItem 
                                 key={index}
                                 sx={{ borderBottom: '1px solid #b71c1c', cursor: 'pointer' }}
-                                onClick={() => fetchArtistInfo(artist)}>
-                                {artist}
+                                onClick={() => fetchGenreInfo(genre)}>
+                                {genre}
                             </ListItem>
                         ))}
                     </List>
@@ -238,7 +240,7 @@ const Artist = () => {
                         overflowY: 'auto',
                         bgcolor: '#333',
                         color: 'white',
-                        padding: '20px',
+                        paddingLeft: '20px',
                         boxSizing: 'border-box',
                     }}
                 >
@@ -254,7 +256,7 @@ const Artist = () => {
     );
 };
 
-export default Artist;
+export default Genre;
 
 
 
