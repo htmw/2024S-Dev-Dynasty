@@ -178,7 +178,7 @@ const RecommendedSongs = ({ recommendedSongs }) => {
                   Mood: {song.mood}
                 </Typography>
                 <Typography variant="body2">
-                  Length: {song.length}
+                  Length: {Math.floor(song.length / 60000)} minutes
                 </Typography>
               </CardContent>
             </Collapse>
