@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Button, List, ListItem, ListItemIcon, ListItemText, Typography, AppBar, Toolbar, CssBaseline, Link, Divider, IconButton, Avatar, Menu, MenuItem, TextField, InputAdornment } from '@mui/material';
+import { Box, Button, List, ListItem, ListItemIcon, ListItemText, Typography, AppBar, Toolbar, CssBaseline, Link, Divider, IconButton, Avatar, Menu, MenuItem, TextField, InputAdornment, CircularProgress } from '@mui/material';
 import HomeIcon from '@mui/icons-material/Home';
 import MenuIcon from '@mui/icons-material/Menu';
 import SearchIcon from '@mui/icons-material/Search';
@@ -22,7 +22,7 @@ const Artist = () => {
     const [predictedSongs, setPredictedSongs] = useState([]);
     const [reportText, setReportText] = useState(""); // State to manage report text
     const [openModal, setOpenModal] = useState(false); // State to manage modal open/close
-
+    const [loading, setLoading] = useState(false); // New state for loading indicator
     const handleMenu = (event) => {
         setAnchorEl(event.currentTarget);
     };
@@ -43,6 +43,7 @@ const Artist = () => {
     };
 
     const fetchArtistInfo = async (artistName) => {
+        setLoading(true); // Set loading state to true before API call
         try {
             const response = await fetch('http://localhost:5000/songs-by-artist', {
                 method: 'POST',
@@ -62,6 +63,8 @@ const Artist = () => {
         } catch (error) {
             console.error("Failed to fetch artist info:", error);
             // Handle errors, e.g., by setting an error state or displaying a notification
+        } finally {
+            setLoading(false); // Set loading state to false after API call completes
         }
     };
 
@@ -286,6 +289,9 @@ const Artist = () => {
                     }}
                 >
                     <RecommendedSongs recommendedSongs={predictedSongs} />
+                </Box>
+                <Box sx={{ position: 'relative' }}>
+                    {loading && <CircularProgress sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }} />}
                 </Box>
             </Box>
             </div>
