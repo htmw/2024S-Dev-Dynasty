@@ -149,7 +149,6 @@ function Playlist() {
         });
     };
     
-    
     return (
         <>
          <CssBaseline />
@@ -198,7 +197,7 @@ function Playlist() {
                         <ListItemIcon><FeaturedPlayListIcon style={{ color: 'white' }} /></ListItemIcon>
                         <ListItemText primary="Playlists" />
                     </ListItem>
-                    <Box sx={{paddingTop:'450px'}}>
+                    <Box sx={{paddingTop:'910px'}}>
                     <Divider sx={{ bgcolor: "gray" }} />
                     <ListItem
                         onClick={() => handleDialogOpen("privacy")}

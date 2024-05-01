@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { Box, Button, List, ListItem, ListItemIcon, ListItemText, Typography, AppBar, Toolbar, CssBaseline, Link, Divider, useTheme, IconButton, Avatar, Menu, MenuItem, TextField, InputAdornment } from '@mui/material';
+import { Box, Button, List, ListItem, ListItemIcon, ListItemText, Typography, AppBar, Toolbar, CssBaseline, Link, Divider, useTheme, IconButton, Avatar, Menu, MenuItem, TextField, InputAdornment, useMediaQuery } from '@mui/material';
 import HomeIcon from '@mui/icons-material/Home';
 import MenuIcon from '@mui/icons-material/Menu';
 import SearchIcon from '@mui/icons-material/Search';
@@ -15,11 +15,18 @@ import RecommendedSongs from './recommendedSongs';
 import { logout } from '../../userAuth/firebase';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import ReportIcon from '@mui/icons-material/Report';
 import FeaturedPlayListIcon from '@mui/icons-material/FeaturedPlayList';
 import Tooltip from '@mui/material/Tooltip';
 import { useAuth } from '../../userAuth/AuthProvider';
 import { AuthProvider } from '../../userAuth/AuthProvider';
+import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from '@mui/material';
 
+// Function to handle report action
+const handleReport = () => {
+    // Implement report functionality here
+    console.log("Report action triggered");
+  };
 const MoodStatus = () => {
     const navigate = useNavigate();
     const [anchorEl, setAnchorEl] = React.useState(null);
@@ -32,6 +39,7 @@ const MoodStatus = () => {
     const [showInfoText, setShowInfoText] = useState(true);
     const { user } = useAuth(); // Access the user object
     const isGuest = user?.isGuest; // Determine if the logged in user is a guest
+    const [reportText, setReportText] = useState(""); // State to store the report text
 
     const handleFileUpload = (event) => {
         const file = event.target.files[0];
@@ -72,7 +80,6 @@ const MoodStatus = () => {
         logout();
         navigate('/');
     }
-
     const predictSongs = async () => {
         console.log(uploadedImage)
         if (!image) {
@@ -110,6 +117,7 @@ const MoodStatus = () => {
             console.error('Error predicting songs:', err.message);
         }
     };
+    
 
     // AppBar styles
     const appBarStyle = {
@@ -117,16 +125,26 @@ const MoodStatus = () => {
         color: '#b71c1c', // Red accent text
         boxShadow: '0 2px 4px -1px rgba(183, 28, 28, 0.2), 0 4px 5px 0 rgba(183, 28, 28, 0.14), 0 1px 10px 0 rgba(183, 28, 28, 0.12)', // Red-toned shadow for depth
     };
-
     const menuItems = [
         { text: 'Playlist', icon: <FeaturedPlayListIcon />, onClick: () => navigate('/playlists'), disabled: isGuest },
         { text: 'Home', icon: <HomeIcon />, onClick: () => navigate('/home'), disabled: isGuest },
         { text: 'Library', icon: <LibraryMusicIcon />, onClick: () => navigate('/library'), disabled: isGuest },
         { text: 'Profile', icon: <AccountCircleIcon />, onClick: () => navigate('/profile'), disabled: isGuest },
+        { text: 'Report', icon: <ReportIcon />, onClick: handleOpenModal },
     ];
+    const theme = useTheme();
+    const breakpoints = ["sm", "md", "lg", "xl"];
+    const matches = breakpoints.map((bp) => useMediaQuery(`(min-width:${theme.breakpoints.values[bp]}px)`));
+
+    const handleReportSubmit = () => {
+        console.log("Report submitted:", reportText);
+        handleCloseModal();
+    };
+    
 
     return (
-        <> <div style= {{overflowX:'hidden', overflowY:'hidden'}}>
+        <>
+         <div style= {{overflowX:'hidden', overflowY:'hidden'}}>
             <AppBar position="static" sx={appBarStyle}>
                 <Toolbar>
                     <IconButton
@@ -158,23 +176,57 @@ const MoodStatus = () => {
                        
                     </Menu>
                     <Typography variant="h6" sx={{ flexGrow: 1, color: '#b71c1c' }}>
-                        MoodSphere
-                    </Typography>
-                    <IconButton
-                        size="large"
-                        edge="end"
-                        aria-label="account of current user"
-                        aria-controls="menu-appbar"
-                        aria-haspopup="true"
-                        onClick={handleMenu}
-                        color="inherit"
-                    >
-                        <Avatar sx={{ bgcolor: '#b71c1c' }} />
-                    </IconButton>
-                </Toolbar>
-            </AppBar>
+                    MoodSphere
+                        </Typography>
+                        <IconButton
+                            color="inherit"
+                            aria-label="report"
+                            onClick={handleReport} // Call handleReport when report button is clicked
+                        >
+                            <ReportIcon />
+                        </IconButton>
+                        <IconButton
+                            color="inherit"
+                            aria-label="account of current user"
+                            aria-controls="menu-appbar"
+                            aria-haspopup="true"
+                            onClick={handleMenu}
+                        >
+                            <Avatar />
+                        </IconButton>
+                    </Toolbar>
+                </AppBar>
+
+                 {/* Dialog for Report */}
+                 <Dialog open={openModal} onClose={handleCloseModal}>
+                    <DialogTitle>Report</DialogTitle>
+                    <DialogContent>
+                        <DialogContentText>
+                            Please describe the issue:
+                        </DialogContentText>
+                        <TextField
+                            autoFocus
+                            margin="dense"
+                            id="report-text"
+                            label="Report"
+                            fullWidth
+                            multiline
+                            rows={4}
+                            variant="outlined"
+                            value={reportText}
+                            onChange={(e) => setReportText(e.target.value)}
+                        />
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={handleCloseModal}>Cancel</Button>
+                        <Button onClick={handleReportSubmit} color="primary">Submit</Button>
+                    </DialogActions>
+                </Dialog>
+                
             <div style={{ display: 'flex', height: '91.1vh', backgroundColor: '#121212' }}>
                 <CssBaseline />
+
+                
                 <Box
                     sx={{
                         width: 240,
@@ -185,7 +237,11 @@ const MoodStatus = () => {
                         color: 'white',
                         overflowX: 'hidden',
                         borderRight: '1px solid #b71c1c',
+                        "@media (max-width:600px)": {
+                            width: 100, // Adjusted width for smaller screens
+                          }
                     }}>
+            
                     <Modal
                         aria-labelledby="transition-modal-title"
                         aria-describedby="transition-modal-description"
@@ -235,37 +291,26 @@ const MoodStatus = () => {
                             </Paper>
                         </Fade>
                     </Modal>
+                    
                     <List>
-  {menuItems.map((item, index) => (
-    <Tooltip 
-      key={index} 
-      title={isGuest ? "This feature is not available for guest users." : ""}
-      placement="right"
-    >
-      <div> {/* Wrap the ListItem in a div because Tooltip children must be able to hold a ref */}
-        <ListItem 
-          button 
-          onClick={() => {
-            if (!isGuest) {
-              item.onClick();
-            }
-          }}
-          sx={{ 
-            '&:hover': { 
-              bgcolor: !isGuest ? '#757575' : 'transparent',
-            },
-            opacity: !isGuest ? 1 : 0.5,
-            pointerEvents: isGuest ? 'none' : 'auto',
-          }}
-        >
-          <ListItemIcon sx={{ color: 'white' }}>{item.icon}</ListItemIcon>
-          <ListItemText primary={item.text} />
-        </ListItem>
-      </div>
-    </Tooltip>
-  ))}
-</List>
-
+        {menuItems.map((item, index) => (
+          <ListItem
+            button
+            key={index}
+            onClick={item.onClick}
+            sx={{ "&:hover": { bgcolor: "#757575" } }}
+          >
+            {matches[0] ? (
+              <>
+                <ListItemIcon sx={{ color: "white" }}>{item.icon}</ListItemIcon>
+                <ListItemText primary={item.text} />
+              </>
+            ) : (
+              <IconButton sx={{ color: "white" }}>{item.icon}</IconButton>
+            )}
+          </ListItem>
+        ))}
+      </List>
                     <Box mt="auto" py={2}>
                         <Divider sx={{ bgcolor: 'gray' }} />
                         <List dense>
@@ -283,6 +328,7 @@ const MoodStatus = () => {
                     </Box>
                 </Box>
                 <ToastContainer />
+
                
                 <Box sx={{ position: 'relative', width: '100%' }}>
                     <Box
