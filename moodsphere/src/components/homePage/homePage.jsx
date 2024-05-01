@@ -1,39 +1,56 @@
-import React, { useRef, useState } from 'react';
-import { Box, Button, List, ListItem, ListItemIcon, ListItemText, Typography, AppBar, Toolbar, CssBaseline, Link, Divider, useTheme, IconButton, Avatar, Menu, MenuItem, TextField, InputAdornment ,useMediaQuery  } from '@mui/material';
-import HomeIcon from '@mui/icons-material/Home';
-import MenuIcon from '@mui/icons-material/Menu';
-import SearchIcon from '@mui/icons-material/Search';
-import LibraryMusicIcon from '@mui/icons-material/LibraryMusic';
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import PhotoCameraIcon from '@mui/icons-material/PhotoCamera';
-import PersonSearchIcon from '@mui/icons-material/PersonSearch';
-import MoodIcon from '@mui/icons-material/Mood';
-import EmojiEmotionsIcon from '@mui/icons-material/EmojiEmotions';
-import { Modal, Backdrop, Fade, Paper } from '@mui/material';
-import CameraAltIcon from '@mui/icons-material/CameraAlt';
-import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
-import { useNavigate } from 'react-router-dom';
-import Bubble from '../LandingPage/homebubble';
-import RecommendedSongs from './recommendedSongs';
-import { logout } from '../../userAuth/firebase';
-import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from '@mui/material';
+import React, { useRef, useState } from "react";
+import {
+  Box,
+  Button,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  Typography,
+  AppBar,
+  Toolbar,
+  CssBaseline,
+  Link,
+  Divider,
+  useTheme,
+  IconButton,
+  Avatar,
+  Menu,
+  MenuItem,
+  TextField,
+  InputAdornment,
+} from "@mui/material";
+import HomeIcon from "@mui/icons-material/Home";
+import MenuIcon from "@mui/icons-material/Menu";
+import SearchIcon from "@mui/icons-material/Search";
+import LibraryMusicIcon from "@mui/icons-material/LibraryMusic";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import PhotoCameraIcon from "@mui/icons-material/PhotoCamera";
+import PersonSearchIcon from "@mui/icons-material/PersonSearch";
+import MoodIcon from "@mui/icons-material/Mood";
+import EmojiEmotionsIcon from "@mui/icons-material/EmojiEmotions";
+import { Modal, Backdrop, Fade, Paper } from "@mui/material";
+import CameraAltIcon from "@mui/icons-material/CameraAlt";
+import InsertDriveFileIcon from "@mui/icons-material/InsertDriveFile";
+import { useNavigate } from "react-router-dom";
+import Bubble from "../LandingPage/homebubble";
+import RecommendedSongs from "./recommendedSongs";
+import { logout } from "../../userAuth/firebase";
 import FeaturedPlayListIcon from '@mui/icons-material/FeaturedPlayList';
-import ReportIcon from '@mui/icons-material/Report';
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
+} from "@mui/material";
 
- 
-// Function to handle report action
- const handleReport = () => {
-  // Implement report functionality here
-  console.log("Report action triggered");
-};
 const HomePage = () => {
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [openModal, setOpenModal] = React.useState(false);
   const [openDialog, setOpenDialog] = useState(false);
   const [dialogContent, setDialogContent] = useState(""); // To differentiate between Legal and Privacy
-  const [reportText, setReportText] = useState(""); // State to manage report text
-
   const handleDialogOpen = (content) => {
     setDialogContent(content);
     setOpenDialog(true);
@@ -61,8 +78,6 @@ const HomePage = () => {
     logout();
     navigate("/");
   };
-
-
   // AppBar styles
   const appBarStyle = {
     backgroundColor: "#121212", // Dark background
@@ -70,18 +85,12 @@ const HomePage = () => {
     boxShadow:
       "0 2px 4px -1px rgba(183, 28, 28, 0.2), 0 4px 5px 0 rgba(183, 28, 28, 0.14), 0 1px 10px 0 rgba(183, 28, 28, 0.12)", // Red-toned shadow for depth
   };
-  const handleReportSubmit = () => {
-    // You can implement report submission here
-    console.log("Report submitted:", reportText);
-    handleCloseModal();
-  };
 
     const menuItems = [
         { text: 'Home', icon: <HomeIcon />, onClick: () => navigate('/home') },
         { text: 'Library', icon: <LibraryMusicIcon />, onClick: () => navigate('/library') },
         { text: 'Profile', icon: <AccountCircleIcon />, onClick: () => navigate('/profile') },
         { text: 'Your Playlist', icon: <FeaturedPlayListIcon />, onClick: () => navigate('/playlists') },
-        { text: 'Report', icon: <ReportIcon />, onClick: handleOpenModal },
     ];
   const actionItems = [
     {
@@ -90,7 +99,7 @@ const HomePage = () => {
       onClick: () => navigate("/genre"),
     },
     {
-      text: "Find Artist By Artist",
+      text: "Find Music By Artist",
       icon: <PersonSearchIcon />,
       onClick: () => navigate("/artist"),
     },
@@ -105,10 +114,6 @@ const HomePage = () => {
       onClick: () => navigate("/status"),
     },
   ];
-
-  const theme = useTheme();
-  const breakpoints = ["sm", "md", "lg", "xl"];
-  const matches = breakpoints.map((bp) => useMediaQuery(`(min-width:${theme.breakpoints.values[bp]}px)`));
 
   return (
     <>
@@ -159,30 +164,7 @@ const HomePage = () => {
           </IconButton>
         </Toolbar>
       </AppBar>
-      <Dialog open={openModal} onClose={handleCloseModal}>
-        <DialogTitle>Report</DialogTitle>
-        <DialogContent>
-          <DialogContentText> 
-            Please describe the issue:
-          </DialogContentText>
-          <TextField
-            autoFocus
-            margin="dense"
-            id="report-text"
-            label="Report"
-            fullWidth
-            multiline
-            rows={4}
-            variant="outlined"
-            value={reportText}
-            onChange={(e) => setReportText(e.target.value)}
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseModal}>Cancel</Button>
-          <Button onClick={handleReportSubmit} color="primary">Submit</Button>
-        </DialogActions>
-      </Dialog>
+
       <div
         style={{
           display: "flex",
@@ -191,62 +173,62 @@ const HomePage = () => {
         }}
       >
         <CssBaseline />
-      <Box
-      sx={{
-        width: 240,
-        flexShrink: 0,
-        bgcolor: "black",
-        display: "flex",
-        flexDirection: "column",
-        color: "white",
-        overflowX: "hidden",
-        borderRight: "1px solid #b71c1c",
-        "@media (max-width:600px)": {
-          width: 100, // Adjusted width for smaller screens
-        }
-      }}
-    >
-<List>
-  {menuItems.map((item, index) => (
-    <ListItem
-      button
-      key={index}
-      onClick={item.onClick}
-      sx={{ "&:hover": { bgcolor: "#757575" } }}
-    >
-      {matches[0] ? (
-        <>
-          <ListItemIcon sx={{ color: "white" }}>{item.icon}</ListItemIcon>
-          <ListItemText primary={item.text} />
-        </>
-      ) : (
-        <IconButton sx={{ color: "white" }}>{item.icon}</IconButton>
-      )}
-    </ListItem>
-  ))}
-</List>
-<Box mt="auto" py={2}>
-  <Divider sx={{ bgcolor: "gray" }} />
-  <List dense>
-    <ListItem
-      onClick={() => handleDialogOpen("privacy")}
-      sx={{ py: 1, px: 2 }}
-    >
-      <Link color="inherit" underline="hover">
-        Privacy Policy
-      </Link>
-    </ListItem>
-    <ListItem
-      onClick={() => handleDialogOpen("legal")}
-      sx={{ py: 1, px: 2 }}
-    >
-      <Link color="inherit" underline="hover">
-        Legal
-      </Link>
-    </ListItem>
-  </List>
-      </Box>
-    </Box>
+
+        <Box
+          sx={{
+            width: 240,
+            flexShrink: 0,
+            bgcolor: "black",
+            display: "flex",
+            flexDirection: "column",
+            color: "white",
+            overflowX: "hidden",
+            borderRight: "1px solid #b71c1c",
+          }}
+        >
+          <List>
+            {menuItems.map((item, index) => (
+              <ListItem
+                button
+                key={index}
+                onClick={item.onClick}
+                sx={{ "&:hover": { bgcolor: "#757575" } }}
+              >
+                <ListItemIcon sx={{ color: "white" }}>{item.icon}</ListItemIcon>
+                <ListItemText primary={item.text} />
+              </ListItem>
+            ))}
+          </List>
+          <Box mt="auto" py={2}>
+            <Divider sx={{ bgcolor: "gray" }} />
+            <List dense>
+            <ListItem
+                onClick={() => handleDialogOpen("userguide")}
+                sx={{ py: 1, px: 2 }}
+                >
+                <Link color="inherit" underline="hover">
+                User Guide
+                </Link>
+                </ListItem>
+              <ListItem
+                onClick={() => handleDialogOpen("privacy")}
+                sx={{ py: 1, px: 2 }}
+              >
+                <Link color="inherit" underline="hover">
+                  Privacy Policy
+                </Link>
+              </ListItem>
+              <ListItem
+                onClick={() => handleDialogOpen("legal")}
+                sx={{ py: 1, px: 2 }}
+              >
+                <Link color="inherit" underline="hover">
+                  Legal
+                </Link>
+              </ListItem>
+            </List>
+          </Box>
+        </Box>
         <Dialog
           open={openDialog}
           onClose={handleDialogClose}
@@ -260,10 +242,83 @@ const HomePage = () => {
           }}
         >
           <DialogTitle sx={{ fontWeight: "bold" }}>
-            {dialogContent === "privacy" ? "Privacy Policy" : "Legal Notice"}
+            {dialogContent === "privacy" ? "Privacy Policy" : ""}
           </DialogTitle>
 
           <DialogContent>
+
+
+          <DialogContentText sx={{ color: "black" }}>
+              {dialogContent === "userguide" ? (
+                // User guide content here
+                <React.Fragment>
+                  <h2>User Guide</h2>
+                  <h3>Sign Up</h3>
+                  <p>
+                  Select "Sign up with Google" or "Sign up with Email" from the available sign-up options.
+                  Signup using Google
+                  Select "Sign up with Google" from the menu.
+                  You'll be asked to log into your Google account if you haven't already.
+                  Review the permissions requested by Mood Sphere.
+                  To allow access to your Google account details, click "Allow".
+                  You'll be taken to the Mood Sphere dashboard after your account has been created.
+
+                  Signup Using Email
+                  The "Sign up with Email" button should be clicked.
+                  Type your email address into the designated space.
+                  Make sure your account password is secure.
+                  For the registration process to be completed, click the "Sign Up" button.
+                  You will be taken to the Mood Sphere dashboard after registration.
+
+                  </p>
+
+                  <h3>Find Music by Genre</h3>
+                  <p>
+                  Choose this option to listen to music in the genres that you enjoy.
+                  Choose a Genre: Choose from a wide range of genres, including jazz, pop, rock, hip hop, and more.
+                  Find New Music: Look into the songs and musicians that fall within your favorite genres.
+                  Enjoy Personalized Recommendations: Get recommendations based on your preferred genres, which will assist you in finding new songs and musicians that share your interest in music.
+
+                  </p>
+
+                  <h3>Find Music by Artist</h3>
+                  <p>
+                  Choose this option to listen to music by artist that you enjoy.
+                  Enter Artist Name: Enter the name of your preferred musician or band in the search field.
+                  Explore Their Music: Find the albums, tracks, and most recent releases that they have made popular.
+                  Enjoy the music: Play tracks by your favorite musicians and look through personalized recommendations for new music.
+
+                  </p>
+
+                  <h3>Find Music by Mood</h3>
+                  <p>
+                  Select Mood: From a variety of possibilities, such as happy, calm, energetic, or relaxed, select your current mood.
+                  Get Suggestions: Our algorithm will make musical recommendations based on your mood, improving your listening experience and expressing your emotions.
+                  Explore Music: Look through the playlist that has been suggested for you based on your current mood to find new songs that speak to you.
+                  Enjoy the music: Take in the music that is ideally suited to your mood by listening to the carefully crafted playlist.
+                  </p>
+
+                  <h3>Check Mood Status</h3>
+                  <p>
+                  Upload Photo: Choose a photo of yourself by clicking the "Upload" button.
+                  Mood Prediction: Once your photo has been uploaded, click the "Predict" button to have music recommendations made depending on your present emotional state.
+                  Enjoy Customized Music: Enjoy the pleasure of listening to music that enhances your experience and complements your present state of mind!
+
+                  </p>
+
+                  <h3>Legal and Privacy Policy</h3>
+                  <p>
+                  Check out our legal and privacy policy to find out more about how we manage your data and guarantee that your privacy is maintained. Recognize the terms and conditions for using Mood Sphere as well as our security measures for your personal data.
+                  </p>
+
+                </React.Fragment>
+              ) :null
+              }
+            </DialogContentText>
+
+
+
+
             <DialogContentText sx={{ color: "black" }}>
               {dialogContent === "privacy" ? (
                 // Privacy Policy content here

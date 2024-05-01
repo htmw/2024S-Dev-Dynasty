@@ -211,6 +211,14 @@ const Library = () => {
                         <Divider sx={{ bgcolor: "gray" }} />
                         <List dense>
                             <ListItem
+                            onClick={() => handleDialogOpen("userguide")}
+                            sx={{ py: 1, px: 2 }}
+                            >
+                            <Link color="inherit" underline="hover">
+                            User Guide
+                            </Link>
+                            </ListItem>
+                            <ListItem
                                 onClick={() => handleDialogOpen("privacy")}
                                 sx={{ py: 1, px: 2 }}
                             >
@@ -230,143 +238,216 @@ const Library = () => {
                     </Box>
                 </Box>
                 <Dialog
-                    open={openDialog}
-                    onClose={handleDialogClose}
-                    aria-labelledby="alert-dialog-title"
-                    aria-describedby="alert-dialog-description"
-                    sx={{
-                        "& .MuiDialog-paper": {
-                            backgroundColor: "#ffffff", // Changing the background color to white for a formal look
-                            color: "#000000", // Text color set to black for readability
-                        },
-                    }}
-                >
-                    <DialogTitle sx={{ fontWeight: "bold" }}>
-                        {dialogContent === "privacy" ? "Privacy Policy" : "Legal Notice"}
-                    </DialogTitle>
+          open={openDialog}
+          onClose={handleDialogClose}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+          sx={{
+            "& .MuiDialog-paper": {
+              backgroundColor: "#ffffff", // Changing the background color to white for a formal look
+              color: "#000000", // Text color set to black for readability
+            },
+          }}
+        >
+          <DialogTitle sx={{ fontWeight: "bold" }}>
+            {dialogContent === "privacy" ? "Privacy Policy" : ""}
+          </DialogTitle>
 
-                    <DialogContent>
-                        <DialogContentText sx={{ color: "black" }}>
-                            {dialogContent === "privacy" ? (
-                                // Privacy Policy content here
-                                <React.Fragment>
-                                    <p>
-                                        Moodsphere is committed to protecting your privacy and
-                                        ensuring a secure experience for all our users. This Privacy
-                                        Policy outlines our practices concerning the collection,
-                                        use, and sharing of your personal information.
-                                    </p>
+          <DialogContent>
 
-                                    <h3>Information Collection</h3>
-                                    <p>
-                                        We collect information necessary for providing our services,
-                                        including:
-                                    </p>
-                                    <ul>
-                                        <li>
-                                            Email addresses for account registration and communication
-                                            purposes.
-                                        </li>
-                                        <li>
-                                            Usage data to enhance our services and user experience.
-                                        </li>
-                                    </ul>
 
-                                    <h3>Image Processing</h3>
-                                    <p>
-                                        Images uploaded for mood prediction are processed securely
-                                        and deleted immediately after analysis.
-                                    </p>
+          <DialogContentText sx={{ color: "black" }}>
+              {dialogContent === "userguide" ? (
+                // User guide content here
+                <React.Fragment>
+                  <h2>User Guide</h2>
+                  <h3>Sign Up</h3>
+                  <p>
+                  Select "Sign up with Google" or "Sign up with Email" from the available sign-up options.
+                  Signup using Google
+                  Select "Sign up with Google" from the menu.
+                  You'll be asked to log into your Google account if you haven't already.
+                  Review the permissions requested by Mood Sphere.
+                  To allow access to your Google account details, click "Allow".
+                  You'll be taken to the Mood Sphere dashboard after your account has been created.
 
-                                    <h3>Use of Information</h3>
-                                    <p>
-                                        Your data enables us to personalize the app experience and
-                                        recommend music tailored to your preferences. It also helps
-                                        us in improving our services.
-                                    </p>
+                  Signup Using Email
+                  The "Sign up with Email" button should be clicked.
+                  Type your email address into the designated space.
+                  Make sure your account password is secure.
+                  For the registration process to be completed, click the "Sign Up" button.
+                  You will be taken to the Mood Sphere dashboard after registration.
 
-                                    <h3>Data Sharing</h3>
-                                    <p>
-                                        We do not share your personal information with third
-                                        parties, except as required to provide our services or
-                                        comply with legal obligations.
-                                    </p>
+                  </p>
 
-                                    <h3>Data Security</h3>
-                                    <p>
-                                        We implement stringent security measures to protect your
-                                        information. However, no system can guarantee absolute
-                                        security.
-                                    </p>
+                  <h3>Find Music by Genre</h3>
+                  <p>
+                  Choose this option to listen to music in the genres that you enjoy.
+                  Choose a Genre: Choose from a wide range of genres, including jazz, pop, rock, hip hop, and more.
+                  Find New Music: Look into the songs and musicians that fall within your favorite genres.
+                  Enjoy Personalized Recommendations: Get recommendations based on your preferred genres, which will assist you in finding new songs and musicians that share your interest in music.
 
-                                    <h3>User Rights</h3>
-                                    <p>
-                                        You have the right to access and manage your information
-                                        within Moodsphere.
-                                    </p>
+                  </p>
 
-                                    <p>
-                                        For further inquiries or assistance, please contact our
-                                        support team.
-                                    </p>
-                                </React.Fragment>
-                            ) : (
-                                // Legal Notice content here
-                                <React.Fragment>
-                                    <p>
-                                        This legal notice contains the terms and conditions
-                                        governing your use of the Moodsphere app and its services.
-                                        By accessing or using Moodsphere, you agree to be bound by
-                                        these terms.
-                                    </p>
+                  <h3>Find Music by Artist</h3>
+                  <p>
+                  Choose this option to listen to music by artist that you enjoy.
+                  Enter Artist Name: Enter the name of your preferred musician or band in the search field.
+                  Explore Their Music: Find the albums, tracks, and most recent releases that they have made popular.
+                  Enjoy the music: Play tracks by your favorite musicians and look through personalized recommendations for new music.
 
-                                    <h3>Intellectual Property Rights</h3>
-                                    <p>
-                                        All content within Moodsphere, including texts, graphics,
-                                        logos, icons, images, audio clips, digital downloads, and
-                                        software, is the property of Moodsphere or its content
-                                        suppliers and protected by international copyright and
-                                        trademark laws.
-                                    </p>
+                  </p>
 
-                                    <h3>User Conduct</h3>
-                                    <p>
-                                        Users are expected to use Moodsphere services responsibly
-                                        and ethically. Any form of misuse, including the upload of
-                                        offensive or copyrighted material, may result in termination
-                                        of your access to the app.
-                                    </p>
+                  <h3>Find Music by Mood</h3>
+                  <p>
+                  Select Mood: From a variety of possibilities, such as happy, calm, energetic, or relaxed, select your current mood.
+                  Get Suggestions: Our algorithm will make musical recommendations based on your mood, improving your listening experience and expressing your emotions.
+                  Explore Music: Look through the playlist that has been suggested for you based on your current mood to find new songs that speak to you.
+                  Enjoy the music: Take in the music that is ideally suited to your mood by listening to the carefully crafted playlist.
+                  </p>
 
-                                    <h3>Limitation of Liability</h3>
-                                    <p>
-                                        Moodsphere and its affiliates will not be liable for any
-                                        damages arising from the use of this app beyond the scope
-                                        permitted by applicable law.
-                                    </p>
+                  <h3>Check Mood Status</h3>
+                  <p>
+                  Upload Photo: Choose a photo of yourself by clicking the "Upload" button.
+                  Mood Prediction: Once your photo has been uploaded, click the "Predict" button to have music recommendations made depending on your present emotional state.
+                  Enjoy Customized Music: Enjoy the pleasure of listening to music that enhances your experience and complements your present state of mind!
 
-                                    <h3>Amendments</h3>
-                                    <p>
-                                        We reserve the right to amend these terms at any time. Your
-                                        continued use of Moodsphere following any changes indicates
-                                        your acceptance of the new terms.
-                                    </p>
+                  </p>
 
-                                    <p>
-                                        If you have any questions or concerns regarding this legal
-                                        notice or any other policy, please contact our support team.
-                                    </p>
+                  <h3>Legal and Privacy Policy</h3>
+                  <p>
+                  Check out our legal and privacy policy to find out more about how we manage your data and guarantee that your privacy is maintained. Recognize the terms and conditions for using Mood Sphere as well as our security measures for your personal data.
+                  </p>
 
-                                    {/* Additional Legal Notice content */}
-                                </React.Fragment>
-                            )}
-                        </DialogContentText>
-                    </DialogContent>
-                    <DialogActions>
-                        <Button onClick={handleDialogClose} color="primary" autoFocus>
-                            Close
-                        </Button>
-                    </DialogActions>
-                </Dialog>
+                </React.Fragment>
+              ) :null
+              }
+            </DialogContentText>
+
+
+
+
+            <DialogContentText sx={{ color: "black" }}>
+              {dialogContent === "privacy" ? (
+                // Privacy Policy content here
+                <React.Fragment>
+                  <p>
+                    Moodsphere is committed to protecting your privacy and
+                    ensuring a secure experience for all our users. This Privacy
+                    Policy outlines our practices concerning the collection,
+                    use, and sharing of your personal information.
+                  </p>
+
+                  <h3>Information Collection</h3>
+                  <p>
+                    We collect information necessary for providing our services,
+                    including:
+                  </p>
+                  <ul>
+                    <li>
+                      Email addresses for account registration and communication
+                      purposes.
+                    </li>
+                    <li>
+                      Usage data to enhance our services and user experience.
+                    </li>
+                  </ul>
+
+                  <h3>Image Processing</h3>
+                  <p>
+                    Images uploaded for mood prediction are processed securely
+                    and deleted immediately after analysis.
+                  </p>
+
+                  <h3>Use of Information</h3>
+                  <p>
+                    Your data enables us to personalize the app experience and
+                    recommend music tailored to your preferences. It also helps
+                    us in improving our services.
+                  </p>
+
+                  <h3>Data Sharing</h3>
+                  <p>
+                    We do not share your personal information with third
+                    parties, except as required to provide our services or
+                    comply with legal obligations.
+                  </p>
+
+                  <h3>Data Security</h3>
+                  <p>
+                    We implement stringent security measures to protect your
+                    information. However, no system can guarantee absolute
+                    security.
+                  </p>
+
+                  <h3>User Rights</h3>
+                  <p>
+                    You have the right to access and manage your information
+                    within Moodsphere.
+                  </p>
+
+                  <p>
+                    For further inquiries or assistance, please contact our
+                    support team.
+                  </p>
+                </React.Fragment>
+              ) : (
+                // Legal Notice content here
+                <React.Fragment>
+                  <p>
+                    This legal notice contains the terms and conditions
+                    governing your use of the Moodsphere app and its services.
+                    By accessing or using Moodsphere, you agree to be bound by
+                    these terms.
+                  </p>
+
+                  <h3>Intellectual Property Rights</h3>
+                  <p>
+                    All content within Moodsphere, including texts, graphics,
+                    logos, icons, images, audio clips, digital downloads, and
+                    software, is the property of Moodsphere or its content
+                    suppliers and protected by international copyright and
+                    trademark laws.
+                  </p>
+
+                  <h3>User Conduct</h3>
+                  <p>
+                    Users are expected to use Moodsphere services responsibly
+                    and ethically. Any form of misuse, including the upload of
+                    offensive or copyrighted material, may result in termination
+                    of your access to the app.
+                  </p>
+
+                  <h3>Limitation of Liability</h3>
+                  <p>
+                    Moodsphere and its affiliates will not be liable for any
+                    damages arising from the use of this app beyond the scope
+                    permitted by applicable law.
+                  </p>
+
+                  <h3>Amendments</h3>
+                  <p>
+                    We reserve the right to amend these terms at any time. Your
+                    continued use of Moodsphere following any changes indicates
+                    your acceptance of the new terms.
+                  </p>
+
+                  <p>
+                    If you have any questions or concerns regarding this legal
+                    notice or any other policy, please contact our support team.
+                  </p>
+
+                  {/* Additional Legal Notice content */}
+                </React.Fragment>
+              )}
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleDialogClose} color="primary" autoFocus>
+              Close
+            </Button>
+          </DialogActions>
+        </Dialog>
                 <Box
                     component="main"
                     sx={{
