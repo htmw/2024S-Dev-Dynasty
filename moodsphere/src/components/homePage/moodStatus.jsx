@@ -1,4 +1,6 @@
 import React, { useRef, useState } from 'react';
+import { CircularProgress } from '@mui/material';
+import { Box, Button, List, ListItem, ListItemIcon, ListItemText, Typography, AppBar, Toolbar, CssBaseline, Link, Divider, useTheme, IconButton, Avatar, Menu, MenuItem, TextField, InputAdornment, useMediaQuery } from '@mui/material';
 import { Box, Button, List, ListItem, ListItemIcon, ListItemText, Typography, AppBar, Toolbar, CssBaseline, Link, Divider, useTheme, IconButton, Avatar, Menu, MenuItem, TextField, InputAdornment, CircularProgress } from '@mui/material';
 import HomeIcon from '@mui/icons-material/Home';
 import MenuIcon from '@mui/icons-material/Menu';
@@ -76,6 +78,9 @@ const MoodStatus = () => {
     const userLogOut = () => {
         logout();
         navigate('/');
+
+    }
+
     };
 
     const predictSongs = async () => {
@@ -139,6 +144,224 @@ const MoodStatus = () => {
 
     return (
         <>
+
+         <div style= {{overflowX:'hidden', overflowY:'hidden'}}>
+            <AppBar position="static" sx={appBarStyle}>
+                <Toolbar>
+                    <IconButton
+                        size="large"
+                        edge="start"
+                        color="inherit"
+                        aria-label="menu"
+                        sx={{ mr: 2 }}
+                        onClick={handleMenu}
+                    >
+                        <MenuIcon />
+                    </IconButton>
+                    <Menu
+                        id="menu-appbar"
+                        anchorEl={anchorEl}
+                        anchorOrigin={{
+                            vertical: 'top',
+                            horizontal: 'right',
+                        }}
+                        keepMounted
+                        transformOrigin={{
+                            vertical: 'top',
+                            horizontal: 'right',
+                        }}
+                        open={Boolean(anchorEl)}
+                        onClose={handleClose}
+                    >
+                        <MenuItem onClick={userLogOut}>Logout</MenuItem>
+                       
+                    </Menu>
+                    <Typography variant="h6" sx={{ flexGrow: 1, color: '#b71c1c' }}>
+                    MoodSphere
+                        </Typography>
+                        <IconButton
+                            color="inherit"
+                            aria-label="report"
+                            onClick={handleReport} // Call handleReport when report button is clicked
+                        >
+                            <ReportIcon />
+                        </IconButton>
+                        <IconButton
+                            color="inherit"
+                            aria-label="account of current user"
+                            aria-controls="menu-appbar"
+                            aria-haspopup="true"
+                            onClick={handleMenu}
+                        >
+                            <Avatar />
+                        </IconButton>
+                    </Toolbar>
+                </AppBar>
+
+                 {/* Dialog for Report */}
+                 <Dialog open={openModal} onClose={handleCloseModal}>
+                    <DialogTitle>Report</DialogTitle>
+                    <DialogContent>
+                        <DialogContentText>
+                            Please describe the issue:
+                        </DialogContentText>
+                        <TextField
+                            autoFocus
+                            margin="dense"
+                            id="report-text"
+                            label="Report"
+                            fullWidth
+                            multiline
+                            rows={4}
+                            variant="outlined"
+                            value={reportText}
+                            onChange={(e) => setReportText(e.target.value)}
+                        />
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={handleCloseModal}>Cancel</Button>
+                        <Button onClick={handleReportSubmit} color="primary">Submit</Button>
+                    </DialogActions>
+                </Dialog>
+                
+            <div style={{ display: 'flex', height: '91.1vh', backgroundColor: '#121212' }}>
+                <CssBaseline />
+
+                
+                <Box
+                    sx={{
+                        width: 240,
+                        flexShrink: 0,
+                        bgcolor: 'black',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        color: 'white',
+                        overflowX: 'hidden',
+                        borderRight: '1px solid #b71c1c',
+                        "@media (max-width:600px)": {
+                            width: 100, // Adjusted width for smaller screens
+                          }
+                    }}>
+            
+                    <Modal
+                        aria-labelledby="transition-modal-title"
+                        aria-describedby="transition-modal-description"
+                        open={openModal}
+                        onClose={handleCloseModal}
+                        closeAfterTransition>
+                        <Fade in={openModal}>
+                            <Paper elevation={3} sx={{
+                                position: 'absolute',
+                                top: '50%',
+                                left: '50%',
+                                transform: 'translate(-50%, -50%)',
+                                width: 300,
+                                bgcolor: '#121212', // Black background
+                                color: '#b71c1c', // Red text
+                                boxShadow: 24,
+                                p: 4,
+                                display: 'flex',
+                                flexDirection: 'column',
+                                alignItems: 'center',
+                                gap: 2
+                            }}>
+                                <Typography variant="h6" component="h2" sx={{ color: 'white' }}>
+                                    Upload Your Image
+                                </Typography>
+                                <Button
+                                    startIcon={<CameraAltIcon sx={{ color: '#b71c1c' }} />}
+                                    sx={{ color: 'white' }}
+                                    
+                                >
+                                    Camera
+                                </Button>
+                                <><input
+                                    type="file"
+                                    ref={fileInputRef}
+                                    style={{ display: 'none' }}
+                                    onChange={handleFileUpload}
+                                />
+                                </>
+                                <Button
+                                    startIcon={<InsertDriveFileIcon sx={{ color: '#b71c1c' }} />}
+                                    onClick={() => fileInputRef.current.click()}
+                                    sx={{ color: 'white' }}
+                                >
+                                    Browse Files
+                                </Button>
+                            </Paper>
+                        </Fade>
+                    </Modal>
+                    
+                    <List>
+        {menuItems.map((item, index) => (
+          <ListItem
+            button
+            key={index}
+            onClick={item.onClick}
+            sx={{ "&:hover": { bgcolor: "#757575" } }}
+          >
+            {matches[0] ? (
+              <>
+                <ListItemIcon sx={{ color: "white" }}>{item.icon}</ListItemIcon>
+                <ListItemText primary={item.text} />
+              </>
+            ) : (
+              <IconButton sx={{ color: "white" }}>{item.icon}</IconButton>
+            )}
+          </ListItem>
+        ))}
+      </List>
+                    <Box mt="auto" py={2}>
+                        <Divider sx={{ bgcolor: 'gray' }} />
+                        <List dense>
+                            <ListItem sx={{ py: 1, px: 2 }}>
+                                <Link href="#" color="inherit" underline="hover">
+                                    Legal
+                                </Link>
+                            </ListItem>
+                        </List>
+                        <Box px={2} py={1}>
+                            <Link href="#" color="inherit" underline="hover">
+                                Privacy Policy
+                            </Link>
+                        </Box>
+                    </Box>
+                </Box>
+                <ToastContainer />
+
+               
+                <Box sx={{ position: 'relative', width: '100%' }}>
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            flexDirection: 'row',
+                            justifyContent: 'center',
+                            position: 'relative', // Adjusted to be part of the dynamic content
+                            top: 0,
+                            left: 0,
+                            zIndex: 2,
+                            backgroundColor: 'black', // Dark background
+                        }}
+                    >
+                    
+                    {/* Check for showInfoText to conditionally render the info text */}
+                    {showInfoText && (
+                        <Typography
+                            sx={{
+                                position: 'absolute',
+                                top: 70, // Adjust as needed for positioning
+                                left: '50%',
+                                transform: 'translateX(-50%)',
+                                width: '80%',
+                                textAlign: 'center',
+                                zIndex: 2,
+                                color: 'white',
+                                backgroundColor: 'rgba(0, 0, 0, 0.5)', // Semi-transparent black background
+                                padding: '100px',
+                                borderRadius: '5px',
+                                fontSize: '29px',
+=========
             
             <div style={{ overflowX: 'hidden', overflowY: 'hidden' }}>
                 <AppBar position="static" sx={appBarStyle}>
@@ -164,6 +387,7 @@ const MoodStatus = () => {
                             transformOrigin={{
                                 vertical: 'top',
                                 horizontal: 'right',
+>>>>>>>>> Temporary merge branch 2
                             }}
                             open={Boolean(anchorEl)}
                             onClose={handleClose}
