@@ -202,6 +202,14 @@ const HomePage = () => {
           <Box mt="auto" py={2}>
             <Divider sx={{ bgcolor: "gray" }} />
             <List dense>
+            <ListItem
+                onClick={() => handleDialogOpen("userguide")}
+                sx={{ py: 1, px: 2 }}
+                >
+                <Link color="inherit" underline="hover">
+                User Guide
+                </Link>
+                </ListItem>
               <ListItem
                 onClick={() => handleDialogOpen("privacy")}
                 sx={{ py: 1, px: 2 }}
@@ -234,10 +242,83 @@ const HomePage = () => {
           }}
         >
           <DialogTitle sx={{ fontWeight: "bold" }}>
-            {dialogContent === "privacy" ? "Privacy Policy" : "Legal Notice"}
+            {dialogContent === "privacy" ? "Privacy Policy" : ""}
           </DialogTitle>
 
           <DialogContent>
+
+
+          <DialogContentText sx={{ color: "black" }}>
+              {dialogContent === "userguide" ? (
+                // User guide content here
+                <React.Fragment>
+                  <h2>User Guide</h2>
+                  <h3>Sign Up</h3>
+                  <p>
+                  Select "Sign up with Google" or "Sign up with Email" from the available sign-up options.
+                  Signup using Google
+                  Select "Sign up with Google" from the menu.
+                  You'll be asked to log into your Google account if you haven't already.
+                  Review the permissions requested by Mood Sphere.
+                  To allow access to your Google account details, click "Allow".
+                  You'll be taken to the Mood Sphere dashboard after your account has been created.
+
+                  Signup Using Email
+                  The "Sign up with Email" button should be clicked.
+                  Type your email address into the designated space.
+                  Make sure your account password is secure.
+                  For the registration process to be completed, click the "Sign Up" button.
+                  You will be taken to the Mood Sphere dashboard after registration.
+
+                  </p>
+
+                  <h3>Find Music by Genre</h3>
+                  <p>
+                  Choose this option to listen to music in the genres that you enjoy.
+                  Choose a Genre: Choose from a wide range of genres, including jazz, pop, rock, hip hop, and more.
+                  Find New Music: Look into the songs and musicians that fall within your favorite genres.
+                  Enjoy Personalized Recommendations: Get recommendations based on your preferred genres, which will assist you in finding new songs and musicians that share your interest in music.
+
+                  </p>
+
+                  <h3>Find Music by Artist</h3>
+                  <p>
+                  Choose this option to listen to music by artist that you enjoy.
+                  Enter Artist Name: Enter the name of your preferred musician or band in the search field.
+                  Explore Their Music: Find the albums, tracks, and most recent releases that they have made popular.
+                  Enjoy the music: Play tracks by your favorite musicians and look through personalized recommendations for new music.
+
+                  </p>
+
+                  <h3>Find Music by Mood</h3>
+                  <p>
+                  Select Mood: From a variety of possibilities, such as happy, calm, energetic, or relaxed, select your current mood.
+                  Get Suggestions: Our algorithm will make musical recommendations based on your mood, improving your listening experience and expressing your emotions.
+                  Explore Music: Look through the playlist that has been suggested for you based on your current mood to find new songs that speak to you.
+                  Enjoy the music: Take in the music that is ideally suited to your mood by listening to the carefully crafted playlist.
+                  </p>
+
+                  <h3>Check Mood Status</h3>
+                  <p>
+                  Upload Photo: Choose a photo of yourself by clicking the "Upload" button.
+                  Mood Prediction: Once your photo has been uploaded, click the "Predict" button to have music recommendations made depending on your present emotional state.
+                  Enjoy Customized Music: Enjoy the pleasure of listening to music that enhances your experience and complements your present state of mind!
+
+                  </p>
+
+                  <h3>Legal and Privacy Policy</h3>
+                  <p>
+                  Check out our legal and privacy policy to find out more about how we manage your data and guarantee that your privacy is maintained. Recognize the terms and conditions for using Mood Sphere as well as our security measures for your personal data.
+                  </p>
+
+                </React.Fragment>
+              ) :null
+              }
+            </DialogContentText>
+
+
+
+
             <DialogContentText sx={{ color: "black" }}>
               {dialogContent === "privacy" ? (
                 // Privacy Policy content here
