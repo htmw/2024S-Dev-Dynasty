@@ -293,7 +293,7 @@ const Profile = () => {
             </ListItemIcon>
             <ListItemText primary="Playlists" />
           </ListItem>
-          <Box sx={{ paddingTop: "910px" }}>
+          <Box sx={{ paddingTop: "440px" }}>
             <Divider sx={{ bgcolor: "gray" }} />
             <ListItem
               onClick={() => handleDialogOpen("privacy")}

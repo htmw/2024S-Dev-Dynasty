@@ -37,6 +37,7 @@ import Bubble from "../LandingPage/homebubble";
 import RecommendedSongs from "./recommendedSongs";
 import { logout } from "../../userAuth/firebase";
 import FeaturedPlayListIcon from '@mui/icons-material/FeaturedPlayList';
+import ReportIcon from '@mui/icons-material/Report';
 import {
   Dialog,
   DialogTitle,
@@ -50,7 +51,8 @@ const HomePage = () => {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [openModal, setOpenModal] = React.useState(false);
   const [openDialog, setOpenDialog] = useState(false);
-  const [dialogContent, setDialogContent] = useState(""); // To differentiate between Legal and Privacy
+  const [dialogContent, setDialogContent] = useState("");
+  const [reportText, setReportText] = useState("");  // To differentiate between Legal and Privacy
   const handleDialogOpen = (content) => {
     setDialogContent(content);
     setOpenDialog(true);
@@ -73,7 +75,13 @@ const HomePage = () => {
 
   const handleCloseModal = () => {
     setOpenModal(false);
-  };
+};
+
+  const handleReportSubmit = () => {
+    // You can implement report submission here
+    console.log("Report submitted:", reportText);
+    handleCloseModal();
+};
   const userLogOut = () => {
     logout();
     navigate("/");
@@ -91,6 +99,7 @@ const HomePage = () => {
         { text: 'Library', icon: <LibraryMusicIcon />, onClick: () => navigate('/library') },
         { text: 'Profile', icon: <AccountCircleIcon />, onClick: () => navigate('/profile') },
         { text: 'Your Playlist', icon: <FeaturedPlayListIcon />, onClick: () => navigate('/playlists') },
+        { text: 'Report', icon: <ReportIcon />, onClick: handleOpenModal },
     ];
   const actionItems = [
     {
@@ -164,6 +173,30 @@ const HomePage = () => {
           </IconButton>
         </Toolbar>
       </AppBar>
+      <Dialog open={openModal} onClose={handleCloseModal}>
+                <DialogTitle>Report</DialogTitle>
+                <DialogContent>
+                    <DialogContentText> 
+                        Please describe the issue:
+                    </DialogContentText>
+                    <TextField
+                        autoFocus
+                        margin="dense"
+                        id="report-text"
+                        label="Report"
+                        fullWidth
+                        multiline
+                        rows={4}
+                        variant="outlined"
+                        value={reportText}
+                        onChange={(e) => setReportText(e.target.value)}
+                    />
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleCloseModal}>Cancel</Button>
+                    <Button onClick={handleReportSubmit} color="primary">Submit</Button>
+                </DialogActions>
+            </Dialog>
 
       <div
         style={{

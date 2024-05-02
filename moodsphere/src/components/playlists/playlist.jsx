@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import {
     Box, Card, CardContent, Typography, IconButton, Link, List, ListItem, ListItemIcon, ListItemText,
-    AppBar, Toolbar, Divider, Menu, MenuItem, Avatar, SvgIcon, Button, CssBaseline
+    AppBar, Collapse, Toolbar, Divider, Menu, MenuItem, Avatar, SvgIcon, Button, CssBaseline
 } from '@mui/material';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../userAuth/AuthProvider';
@@ -16,6 +16,7 @@ import { motion } from 'framer-motion';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { styled } from '@mui/material/styles';
 import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from '@mui/material';
+import InfoIcon from '@mui/icons-material/Info';
 
 function SpotifyIcon() {
     return (
@@ -59,11 +60,11 @@ function Playlist() {
     const handleDialogOpen = (content) => {
         setDialogContent(content);
         setOpenDialog(true);
-      };
-      
-      const handleDialogClose = () => {
+    };
+
+    const handleDialogClose = () => {
         setOpenDialog(false);
-      };
+    };
     const handleMenu = (event) => {
         setAnchorEl(event.currentTarget);
     };
@@ -78,6 +79,7 @@ function Playlist() {
         logout();
         navigate('/');
     };
+    const [additionalInfoOpen, setAdditionalInfoOpen] = useState({});
 
     useEffect(() => {
         if (user) {
@@ -105,6 +107,12 @@ function Playlist() {
                 setPlaylists([]);
             });
     };
+    const toggleAdditionalInfo = (index) => {
+        setAdditionalInfoOpen((prev) => ({
+            ...prev,
+            [index]: !prev[index],
+        }));
+    };
 
     const deletePlaylist = (playlistId) => {
         const url = `http://127.0.0.1:5000/delete-playlist?user_id=${encodeURIComponent(user.uid)}&playlist_id=${encodeURIComponent(playlistId)}`;
@@ -118,7 +126,7 @@ function Playlist() {
             })
             .catch(error => console.error('Failed to delete playlist', error));
     };
-    
+
     const removeSongFromPlaylist = (playlistId, songKey) => {
         const url = `http://127.0.0.1:5000/remove-song-from-playlist?user_id=${encodeURIComponent(user.uid)}&playlist_id=${encodeURIComponent(playlistId)}&song_key=${encodeURIComponent(songKey)}`;
         const updatedPlaylists = playlists.map(playlist => {
@@ -129,29 +137,27 @@ function Playlist() {
             }
             return playlist;
         });
-    
         // Optimistically update the state before the API call
         setPlaylists(updatedPlaylists);
-    
         fetch(url, {
             method: 'DELETE'
         })
-        .then(response => response.json())
-        .then(data => {
-            console.log(data);
-            // Optionally, refetch playlists here if necessary
-            // fetchPlaylists();
-        })
-        .catch(error => {
-            console.error('Failed to remove song', error);
-            // If the delete fails, revert the optimistic update
-            fetchPlaylists();
-        });
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                // Optionally, refetch playlists here if necessary
+                // fetchPlaylists();
+            })
+            .catch(error => {
+                console.error('Failed to remove song', error);
+                // If the delete fails, revert the optimistic update
+                fetchPlaylists();
+            });
     };
-    
+
     return (
         <>
-         <CssBaseline />
+            <CssBaseline />
             <AppBar position="static" sx={{ backgroundColor: '#121212', color: '#b71c1c' }}>
                 <Toolbar>
                     <IconButton size="large" edge="start" color="inherit" aria-label="menu" sx={{ mr: 2 }} onClick={handleMenu}>
@@ -197,24 +203,24 @@ function Playlist() {
                         <ListItemIcon><FeaturedPlayListIcon style={{ color: 'white' }} /></ListItemIcon>
                         <ListItemText primary="Playlists" />
                     </ListItem>
-                    <Box sx={{paddingTop:'910px'}}>
-                    <Divider sx={{ bgcolor: "gray" }} />
-                    <ListItem
-                        onClick={() => handleDialogOpen("privacy")}
-                        sx={{ py: 1, px: 2 }}
-                    >
-                        <Link color="inherit" underline="hover">
-                            Privacy Policy
-                        </Link>
-                    </ListItem>
-                    <ListItem
-                        onClick={() => handleDialogOpen("legal")}
-                        sx={{ py: 1, px: 2 }}
-                    >
-                        <Link color="inherit" underline="hover">
-                            Legal
-                        </Link>
-                    </ListItem> 
+                    <Box sx={{ paddingTop: '450px' }}>
+                        <Divider sx={{ bgcolor: "gray" }} />
+                        <ListItem
+                            onClick={() => handleDialogOpen("privacy")}
+                            sx={{ py: 1, px: 2 }}
+                        >
+                            <Link color="inherit" underline="hover">
+                                Privacy Policy
+                            </Link>
+                        </ListItem>
+                        <ListItem
+                            onClick={() => handleDialogOpen("legal")}
+                            sx={{ py: 1, px: 2 }}
+                        >
+                            <Link color="inherit" underline="hover">
+                                Legal
+                            </Link>
+                        </ListItem>
                     </Box>
                     <Dialog
                         open={openDialog}
@@ -296,13 +302,13 @@ function Playlist() {
 
                 </List>
                 <Box sx={{ flexGrow: 1 }}>
-                {playlists.length > 0 ? (
+                    {playlists.length > 0 ? (
                         <Typography variant="h6" gutterBottom sx={{ color: 'green', mt: 2 }}>
                             Welcome to your playlists
                         </Typography>
                     ) : (
                         <Typography variant="h6" gutterBottom sx={{ color: 'red', mt: 2 }}>
-                            Oops, no available playlists. Start by creating some! 
+                            Oops, no available playlists. Start by creating some!
                         </Typography>
                     )}
                     {playlists.map((playlist, index) => (
@@ -313,11 +319,11 @@ function Playlist() {
                             transition={{ duration: 0.5 }}
                         >
                             <Card sx={{ bgcolor: '#141414', mb: 2, color: 'white', position: 'relative' }}>
-                            <StyledButton
-                                sx={{ position: 'absolute', right: 16, top: 8, color: 'white' }}
-                                onClick={() => deletePlaylist(playlist.playlist_id)}
+                                <StyledButton
+                                    sx={{ position: 'absolute', right: 16, top: 8, color: 'white' }}
+                                    onClick={() => deletePlaylist(playlist.playlist_id)}
                                 >
-                                Delete Playlist <DeleteIcon />
+                                    Delete Playlist <DeleteIcon />
                                 </StyledButton>
                                 <CardContent>
                                     <Typography variant="h5" gutterBottom>{playlist.playlist_name}</Typography>
@@ -333,11 +339,32 @@ function Playlist() {
                                                     <YouTubeIcon />
                                                 </IconButton>
                                                 <IconButton
-                                                sx={{ color: '#b71c1c' }}
-                                                onClick={() => removeSongFromPlaylist(playlist.playlist_id, song.key)}
+                                                    sx={{ color: '#b71c1c' }}
+                                                    onClick={() => removeSongFromPlaylist(playlist.playlist_id, song.key)}
                                                 >
-                                                <DeleteIcon />
+                                                    <DeleteIcon />
                                                 </IconButton>
+                                                <IconButton
+                                                    size="large"
+                                                    aria-label="additional info"
+                                                    onClick={() => toggleAdditionalInfo(index)}
+                                                >
+                                                    <Typography variant="body2" color='white'><InfoIcon></InfoIcon></Typography>
+                                                </IconButton>
+                                                <Collapse in={additionalInfoOpen[index]} timeout="auto" unmountOnExit>
+                                                    <CardContent style={{ marginTop: 'auto', color: 'white' }}>
+                                                        <Typography variant="body2">
+                                                            Released: {song.release_date}
+                                                        </Typography>
+                                                        <Typography variant="body2">
+                                                            Mood: {song.mood}
+                                                        </Typography>
+                                                        <Typography variant="body2">
+                                                            Length: {Math.floor(song.length / 60000)} minutes
+                                                        </Typography>
+                                                    </CardContent>
+                                                </Collapse>
+
                                             </Box>
                                         </Box>
                                     ))}
