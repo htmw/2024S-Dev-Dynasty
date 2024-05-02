@@ -7,50 +7,46 @@ import LibraryMusicIcon from '@mui/icons-material/LibraryMusic';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { useNavigate } from 'react-router-dom';
 import Bubble from '../LandingPage/homebubble';
-import artists from './artistList.js'
+import genres from './genreList.js'
 import RecommendedSongs from './recommendedSongs.jsx';
 import FeaturedPlayListIcon from '@mui/icons-material/FeaturedPlayList';
-import ReportIcon from '@mui/icons-material/Report';
-import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from '@mui/material';
 
-
-const Artist = () => {
+const Genre = () => {
     const navigate = useNavigate();
-    const [anchorEl, setAnchorEl] = useState(null);
+    const [anchorEl, setAnchorEl] = React.useState(null);
     const [searchQuery, setSearchQuery] = useState('');
-    const [filteredArtists, setFilteredArtists] = useState(artists);
+    const [filteredGenres, setFilteredGenres] = useState(genres);
     const [predictedSongs, setPredictedSongs] = useState([]);
-    const [reportText, setReportText] = useState(""); // State to manage report text
-    const [openModal, setOpenModal] = useState(false); // State to manage modal open/close
     const [loading, setLoading] = useState(false); // New state for loading indicator
+
     const handleMenu = (event) => {
         setAnchorEl(event.currentTarget);
     };
-    
+
     const handleClose = () => {
         setAnchorEl(null);
     };
 
     useEffect(() => {
-        const results = artists.filter(artist =>
-            artist.toLowerCase().includes(searchQuery.toLowerCase())
+        const results = genres.filter(genre =>
+            genre.toLowerCase().includes(searchQuery.toLowerCase())
         );
-        setFilteredArtists(results);
+        setFilteredGenres(results);
     }, [searchQuery]);
 
     const handleSearchChange = (event) => {
         setSearchQuery(event.target.value);
     };
 
-    const fetchArtistInfo = async (artistName) => {
+    const fetchGenreInfo = async (genreName) => {
         setLoading(true); // Set loading state to true before API call
         try {
-            const response = await fetch('http://localhost:5000/songs-by-artist', {
+            const response = await fetch('http://localhost:5000/songs-by-genre', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ artist_name: artistName }),
+                body: JSON.stringify({ genre_name: genreName }),
             });
     
             if (!response.ok) {
@@ -61,25 +57,11 @@ const Artist = () => {
             console.log(data); 
             setPredictedSongs(data.songs); 
         } catch (error) {
-            console.error("Failed to fetch artist info:", error);
+            console.error("Failed to fetch genre info:", error);
             // Handle errors, e.g., by setting an error state or displaying a notification
         } finally {
             setLoading(false); // Set loading state to false after API call completes
         }
-    };
-
-    const handleOpenModal = () => {
-        setOpenModal(true);
-    };
-
-    const handleCloseModal = () => {
-        setOpenModal(false);
-    };
-
-    const handleReportSubmit = () => {
-        // You can implement report submission here
-        console.log("Report submitted:", reportText);
-        handleCloseModal();
     };
 
     const appBarStyle = {
@@ -93,14 +75,10 @@ const Artist = () => {
         { text: 'Library', icon: <LibraryMusicIcon />, onClick: () => navigate('/library') },
         { text: 'Profile', icon: <AccountCircleIcon />, onClick: () => navigate('/profile') },
         { text: 'Playlist', icon: <FeaturedPlayListIcon />, onClick: () => navigate('/playlists') },
-        { text: 'Report', icon: <ReportIcon />, onClick: handleOpenModal },
     ];
-
-
 
     return (
         <>
-
             <AppBar position="static" sx={appBarStyle}>
                 <Toolbar>
                     <IconButton
@@ -150,32 +128,8 @@ const Artist = () => {
                 </Toolbar>
             </AppBar>
 
-            <Dialog open={openModal} onClose={handleCloseModal}>
-                <DialogTitle>Report</DialogTitle>
-                <DialogContent>
-                    <DialogContentText> 
-                        Please describe the issue:
-                    </DialogContentText>
-                    <TextField
-                        autoFocus
-                        margin="dense"
-                        id="report-text"
-                        label="Report"
-                        fullWidth
-                        multiline
-                        rows={4}
-                        variant="outlined"
-                        value={reportText}
-                        onChange={(e) => setReportText(e.target.value)}
-                    />
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={handleCloseModal}>Cancel</Button>
-                    <Button onClick={handleReportSubmit} color="primary">Submit</Button>
-                </DialogActions>
-            </Dialog>
 
-            <div style={{ display: 'flex', height: '91.1vh', backgroundColor: '#121212' }}>
+            <div style={{ display: 'flex', flexDirection: 'row', height: '91.1vh', backgroundColor: '#121212' }}>
                 <CssBaseline />
                 <Box
                     sx={{
@@ -212,11 +166,13 @@ const Artist = () => {
                         </Box>
                     </Box>
                 </Box>
-                <Box sx={{ display: 'flex', height: 'calc(100vh - 64px)'}}>
+                
+                {/* Width Added */}
+                <Box sx={{ display: 'flex', height: 'calc(100vh - 64px)', width: 'calc(500vh - 64px)'}}>
                 <Box
                     sx={{
-                        width: '50%',
-                        overflowY: 'auto',
+                        width: '230px',
+                        overflowY: 'scroll',
                         bgcolor: '#121212',
                         color: 'white',
                         padding: '20px',
@@ -224,13 +180,13 @@ const Artist = () => {
                     }}
                 >
                     <Typography variant="h6" color="inherit" gutterBottom>
-                        Artists
+                        Genres
                     </Typography>
                     <Divider sx={{ bgcolor: '#b71c1c', marginBottom: '20px' }} />
                         <TextField
                             fullWidth
                             variant="outlined"
-                            placeholder="Search Artists..."
+                            placeholder="Search Genres..."
                             value={searchQuery}
                             onChange={handleSearchChange}
                             InputProps={{
@@ -267,24 +223,24 @@ const Artist = () => {
                                 }
                             }}
                         />
-                    <List>
-                        {filteredArtists.map((artist, index) => (
-                            <ListItem 
+                    <List sx={{ display: 'flex', flexDirection: 'column' }}>
+                        {filteredGenres.map((genre, index) => (
+                            <ListItem
                                 key={index}
                                 sx={{ borderBottom: '1px solid #b71c1c', cursor: 'pointer' }}
-                                onClick={() => fetchArtistInfo(artist)}>
-                                {artist}
+                                onClick={() => fetchGenreInfo(genre)}>
+                                {genre}
                             </ListItem>
                         ))}
                     </List>
                 </Box>
                 <Box
                     sx={{
-                        width: '50%',
-                        overflowY: 'auto',
+                        width: '1100px',
+                        overflowY: 'scroll',
                         bgcolor: '#333',
                         color: 'white',
-                        padding: '20px',
+                        paddingLeft: '20px',
                         boxSizing: 'border-box',
                     }}
                 >
@@ -300,7 +256,7 @@ const Artist = () => {
     );
 };
 
-export default Artist;
+export default Genre;
 
 
 

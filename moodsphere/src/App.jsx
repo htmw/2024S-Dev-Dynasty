@@ -11,7 +11,11 @@ import { AuthProvider } from './userAuth/AuthProvider';
 import { useAuthState } from "react-firebase-hooks/auth";
 import MoodStatus from './components/homePage/moodStatus';
 import Playlist from './components/playlists/playlist';
+import Profile from './components/Profile/Profile';
+import { ToastContainer } from 'react-toastify';
 import Library from './components/library/library';
+import Genre from './components/homePage/genre';
+
 function App() {
   const [user, loading] = useAuthState(auth);
   if (loading) {
@@ -19,6 +23,8 @@ function App() {
   }
 
   return (
+    <div>
+    <ToastContainer />
     <AuthProvider>
       <Router>
         <Routes>
@@ -26,7 +32,9 @@ function App() {
           <Route path="/signup" element={user ? <Navigate replace to="/home" /> : <Signup />} />
           <Route path="/login" element={user ? <Navigate replace to="/home" /> : <Login />} />
           <Route path="/home" element={user ? <HomePage /> : <Navigate to="/login" />} />
+          <Route path="/profile" element={<Profile />} />
           <Route path="/artist" element={user ? <Artist /> : <Navigate to="/login" />} />
+          <Route path="/genre" element={user ? <Genre /> : <Navigate to="/login" />} />
           <Route path="/playlists" element={user ? <Playlist /> : <Navigate to="/login" />} />
           <Route path="/library" element={user ? <Library /> : <Navigate to="/login" />} />
           <Route path="/status" element={<MoodStatus />} />  // Accessible without login
@@ -34,6 +42,7 @@ function App() {
         </Routes>    
       </Router>
     </AuthProvider>
+    </div>
   );
 }
 

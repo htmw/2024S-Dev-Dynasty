@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import {
     Box, Card, CardContent, Typography, IconButton, Link, List, ListItem, ListItemIcon, ListItemText,
-    AppBar, Toolbar, Divider, Menu, MenuItem, Avatar, SvgIcon, Button, CssBaseline
+    AppBar,Collapse, Toolbar, Divider, Menu, MenuItem, Avatar, SvgIcon, Button, CssBaseline
 } from '@mui/material';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../userAuth/AuthProvider';
@@ -16,6 +16,7 @@ import { motion } from 'framer-motion';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { styled } from '@mui/material/styles';
 import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from '@mui/material';
+import InfoIcon from '@mui/icons-material/Info';
 
 function SpotifyIcon() {
     return (
@@ -78,6 +79,7 @@ function Playlist() {
         logout();
         navigate('/');
     };
+    const [additionalInfoOpen, setAdditionalInfoOpen] = useState({});
 
     useEffect(() => {
         if (user) {
@@ -105,6 +107,12 @@ function Playlist() {
                 setPlaylists([]);
             });
     };
+    const toggleAdditionalInfo = (index) => {
+        setAdditionalInfoOpen((prev) => ({
+          ...prev,
+          [index]: !prev[index],
+        }));
+      };
 
     const deletePlaylist = (playlistId) => {
         const url = `http://127.0.0.1:5000/delete-playlist?user_id=${encodeURIComponent(user.uid)}&playlist_id=${encodeURIComponent(playlistId)}`;
@@ -148,6 +156,7 @@ function Playlist() {
             fetchPlaylists();
         });
     };
+    
     
     return (
         <>
@@ -197,7 +206,7 @@ function Playlist() {
                         <ListItemIcon><FeaturedPlayListIcon style={{ color: 'white' }} /></ListItemIcon>
                         <ListItemText primary="Playlists" />
                     </ListItem>
-                    <Box sx={{paddingTop:'910px'}}>
+                    <Box sx={{paddingTop:'450px'}}>
                     <Divider sx={{ bgcolor: "gray" }} />
                     <ListItem
                         onClick={() => handleDialogOpen("privacy")}
@@ -338,6 +347,27 @@ function Playlist() {
                                                 >
                                                 <DeleteIcon />
                                                 </IconButton>
+                                                <IconButton
+                                                    size="large"
+                                                    aria-label="additional info"
+                                                    onClick={() => toggleAdditionalInfo(index)}
+                                                    >
+                                                    <Typography variant="body2" color='white'><InfoIcon></InfoIcon></Typography>
+                                                        </IconButton>
+                                                    <Collapse in={additionalInfoOpen[index]} timeout="auto" unmountOnExit>
+              <CardContent style={{ marginTop: 'auto', color:'white' }}>
+                <Typography variant="body2">
+                  Released: {song.release_date}
+                </Typography>
+                <Typography variant="body2">
+                  Mood: {song.mood}
+                </Typography>
+                <Typography variant="body2">
+                  Length: {Math.floor(song.length / 60000)} minutes
+                </Typography>
+              </CardContent>
+            </Collapse>
+                                                
                                             </Box>
                                         </Box>
                                     ))}
@@ -352,3 +382,5 @@ function Playlist() {
 }
 
 export default Playlist;
+
+
