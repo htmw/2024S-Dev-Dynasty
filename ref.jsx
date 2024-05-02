@@ -17,36 +17,37 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import FeaturedPlayListIcon from '@mui/icons-material/FeaturedPlayList';
 import Tooltip from '@mui/material/Tooltip';
-import { useAuth } from '../../userAuth/AuthProvider';import GalleryModal from './GalleryModal';
-import { getStorage } from 'firebase/storage';
-import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
-import CameraCapture from './CameraCapture';
-
-
-
-
 import { initializeApp } from 'firebase/app';
-import { getFirestore , collection, getDocs, addDoc } from 'firebase/firestore';
+import { getFirestore, collection, getDocs, addDoc ,} from 'firebase/firestore';
+import { getStorage } from 'firebase/storage';
+import { useAuth } from '../../userAuth/AuthProvider';
+import GalleryModal from './galleryModal';
+import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 
+//import { AuthProvider } from '../../userAuth/AuthProvider';
+// State to store selected image data
 
 
 // Your Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyB51kbIHKtjhKdC9WLoHn1n5rva-6kdPiU",
-  authDomain: "moodsphere-dev-dynasty.firebaseapp.com",
-  projectId: "moodsphere-dev-dynasty",
-  storageBucket: "moodsphere-dev-dynasty.appspot.com",
-  messagingSenderId: "31582792465",
-  appId: "1:31582792465:web:ed7e040408bb81f4d4fab0",
-  measurementId: "G-WBHFGXF8FQ"
+    apiKey: "AIzaSyB51kbIHKtjhKdC9WLoHn1n5rva-6kdPiU",
+    authDomain: "moodsphere-dev-dynasty.firebaseapp.com",
+    projectId: "moodsphere-dev-dynasty",
+    storageBucket: "moodsphere-dev-dynasty.appspot.com",
+    messagingSenderId: "31582792465",
+    appId: "1:31582792465:web:ed7e040408bb81f4d4fab0",
+    measurementId: "G-WBHFGXF8FQ"
 };
+
+
 
 const firebaseApp = initializeApp(firebaseConfig);
 const db = getFirestore(firebaseApp);
 const storage = getStorage(firebaseApp);
 
-const MoodStatus = ({onClose}) => {
+const MoodStatus = () => {
     const navigate = useNavigate();
+    const [selectedImage, setSelectedImage] = useState([]); 
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [openModal, setOpenModal] = React.useState(false);
     const [uploadedImage, setUploadedImage] = useState(null);
@@ -60,148 +61,152 @@ const MoodStatus = ({onClose}) => {
     const isGuest = user?.isGuest; // Determine if the logged in user is a guest
     const userId = user?.uid;
     const [openGallery, setOpenGallery] = useState(false);
-    const [galleryImages, setGalleryImages] = useState([]);
-    const [openCameraModal, setOpenCameraModal] = useState(false);
-    const [capturedImage, setCapturedImage] = useState(null);
-
-
-    const handleOpenCamera = () => {
-        setOpenCameraModal(true);
-    };
-
-    const handleCloseCamera = () => {
-        setOpenCameraModal(false);
-    };
-
-    const handleImageCapture = (imageDataUrl) => {
-        setCapturedImage(imageDataUrl);
-        setOpenCameraModal(false); // Close camera modal after capturing image
-    };
-
-    const fetchImages = async () => {
-        if (!open) return;
-      
-        const userPicRef = collection(db, `userPic/${userId}/images`);
-      
-        try {
-          const snapshot = await getDocs(userPicRef);
-          const imageList = [];
-      
-          snapshot.forEach(async (doc) => {
-            const data = doc.data();
-            const fileName = data.fileName;
-            const imageUrl = data.imageUrl;
-      
-            if (imageUrl) {
-              try {
-                const downloadUrl = await getDownloadURL(ref(storage, imageUrl));
-                imageList.push({
-                  id: doc.id,
-                  fileName: fileName,
-                  downloadUrl: downloadUrl
-                });
-                setImages(imageList);
-              } catch (error) {
-                console.error(`Error getting download URL for ${fileName}:`, error);
-              }
-            }
-          });
-          setGalleryImages(imageList);
-        } catch (error) {
-          console.error('Error fetching images from Firestore:', error);
-        }
-      };
-      
     
+
+
     const handleOpenGallery = () => {
-        // Open the gallery modal
         setOpenGallery(true);
-    
-        // Fetch images from Firestore when gallery is opened
-        fetchImages();
-      };
-
+    };
 
     const handleCloseGallery = () => {
         setOpenGallery(false);
     };
 
+    // const handleUploadFromSavedImages = () => {
+    //     // Define the logic for handling upload from saved images
+    //     console.log('Handle upload from saved images');
+    //     // You can open a modal or navigate to another page where users can select images
+    // };
+    // const checkImagesCollection = async () => {
+    //     const userId = user.uid;
+    //     const imagesRef = collection(db, 'userPic', userId, 'images'); // Assuming 'db' is your Firestore instance
 
+    //     try {
+    //         const snapshot = await getDocs(imagesRef);
+    //         if (snapshot.empty) {
+    //             // Collection does not exist, create it
+    //             await addDoc(collection(db, 'userPic', userId, 'images'), {});
+    //             // Show popup indicating collection was created
+    //             toast.info("Images collection created successfully!", {
+    //                 position: "top-center",
+    //                 autoClose: 2000,
+    //                 hideProgressBar: false,
+    //                 closeOnClick: true,
+    //                 pauseOnHover: true,
+    //                 draggable: true,
+    //                 progress: undefined,
+    //             });
+    //         }
+    //     } catch (error) {
+    //         console.error('Error checking images collection:', error);
+    //         // Show popup indicating error
+    //         toast.error("Error checking images collection. Please try again later.", {
+    //             position: "top-center",
+    //             autoClose: 2000,
+    //             hideProgressBar: false,
+    //             closeOnClick: true,
+    //             pauseOnHover: true,
+    //             draggable: true,
+    //             progress: undefined,
+    //         });
+    //     }
+    // };
 
-      
-  
-      const handleImageClick = async (imageUrl, event) => {
-        event.preventDefault(); // Prevent default behavior of click event
-        console.log('inside the handleImageCLICK: ', imageUrl);
-      
-        try {
-          const response = await fetch(imageUrl);
-          const blob = await response.blob();
-          const objectUrl = URL.createObjectURL(blob);
-      
-          const formData = new FormData();
-          formData.append('image', blob, 'image.jpg');
-      
-          setUploadedImage(objectUrl);
-          setImage(formData);
-          setShowInfoText(false);
-      
-          handleCloseModal();  // Close the modal after handling image click
-        } catch (error) {
-          console.error('Error handling image click:', error);
-        }
-      };
 
     
+
     const handleFileUpload = async (event) => {
         const file = event.target.files[0];
-      
+
         if (file) {
-          try {
-            // Prepare a reference to the Firebase Storage bucket
-            const storageRef = ref(storage, `userPic/${user.uid}/images/${file.name}`);
-      
-            // Upload the file to Firebase Storage
-            await uploadBytes(storageRef, file);
-      
-            // Get the download URL of the uploaded image
-            const imageUrl = await getDownloadURL(storageRef);
-      
-            // Store image metadata (including URL) in Firestore
-            const imagesRef = collection(db, `userPic/${user.uid}/images`);
-            const docRef = await addDoc(imagesRef, {
-              fileName: file.name,
-              imageUrl: imageUrl
-            });
-      
-            // Set uploaded image preview
-            setUploadedImage(URL.createObjectURL(file));
-      
-            // Prepare FormData for fetch call (assuming you need this for another API call)
-            const formData = new FormData();
-            formData.append('image', file);
-      
-            // Set image FormData to state
-            setImage(formData);
-      
-            // Close modal and update UI
-            handleCloseModal();
-            setShowInfoText(false);
-      
-            // Display success message
-            toast.success('Image uploaded successfully to Firestore!');
-          } catch (error) {
-            console.error('Error uploading image to Firestore:', error);
-            toast.error('Failed to upload image to Firestore. Please try again.');
-          }
+            try {
+                // Prepare a reference to the Firebase Storage bucket
+                const storageRef = ref(storage, `userPic/${user.uid}/images/${file.name}`);
+
+                // Upload the file to Firebase Storage
+                await uploadBytes(storageRef, file);
+
+                // Get the download URL of the uploaded image
+                const imageUrl = await getDownloadURL(storageRef);
+
+                // Store image metadata (including URL) in Firestore
+                const imagesRef = collection(db, `userPic/${user.uid}/images`);
+                const docRef = await addDoc(imagesRef, {
+                    fileName: file.name,
+                    imageUrl: imageUrl
+                });
+
+                // Set uploaded image preview (optional)
+                setUploadedImage(URL.createObjectURL(file));
+
+                // Display success message
+                toast.success('Image uploaded successfully to Firestore!');
+            } catch (error) {
+                console.error('Error uploading image to Firestore:', error);
+                toast.error('Failed to upload image to Firestore. Please try again.');
+            }
         } else {
-          // Handle case when no file is selected
-          setUploadedImage(null);
-          setImage(null);
+            // Handle case when no file is selected
+            setUploadedImage(null);
+            // You can also handle other state updates or display messages here
         }
-      };
+    };
+
+    const handleImageSelect = (image) => {
+        setSelectedImage(image); // Update selected image state
+        handleCloseGallery(); // Close the gallery modal after selecting an image
+    };
 
 
+
+
+const handleUseSelectedImage = async () => {
+    if (selectedImage) {
+            console.log('selectedImage' + selectedImage +'' + typeof selectedImage + '' + JSON.stringify(selectedImage))
+            const { fileName } = selectedImage;
+            console.log(JSON.stringify(selectedImage))
+            console.log(fileName)
+            // Prepare FormData for image upload using selectedImage data
+            const formData = new FormData();
+            formData.append('image', selectedImage);
+            setSelectedImage(URL.createObjectURL(selectedImage));
+            // Set uploaded image preview (if needed)
+            // Assuming URL.createObjectURL(selectedImage) could be used for preview
+
+            // Set FormData for fetch call
+            setImage(formData);
+
+ } 
+}
+// const fetchImages = async () => {
+//     const userId = user.uid;
+//     const imagesRef = collection(db, `userPic/${userId}/images`);
+
+//     try {
+//         const snapshot = await getDocs(imagesRef);
+//         const imageList = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+//         setImages(imageList);
+//     } catch (error) {
+//         console.error('Error fetching images from Firestore:', error);
+//         toast.error('Failed to fetch images. Please try again.');
+//     }
+
+
+
+//     useEffect(() => {
+//         if (userId) {
+//             fetchImages();
+//         }
+//     }, [userId]); // Only re-run effect if userId changes
+
+    // const handleImageClick = (imageId) => {
+    //     const clickedImage = images.find(image => image.id === imageId);
+    //     if (clickedImage) {
+    //         const file = new File([null], clickedImage.fileName, { type: 'image/*' });
+    //         const event = { target: { files: [file] } };
+    //         handleFileUpload(event);
+    //     }
+    // };
     const handleImageRemove = () => {
         setUploadedImage(null);
         setImage(null);
@@ -219,7 +224,7 @@ const MoodStatus = ({onClose}) => {
         // Check if the images collection exists and create it if necessary
         const userId = user.uid;
         const imagesRef = collection(db, 'userPic', userId, 'images');
-    
+
         getDocs(imagesRef)
             .then((snapshot) => {
                 if (snapshot.empty) {
@@ -252,12 +257,12 @@ const MoodStatus = ({onClose}) => {
                     progress: undefined,
                 });
             });
-    
+
         // Open the modal for uploading images
         setOpenModal(true);
     };
 
-    const handleCloseModal = () => {            
+    const handleCloseModal = () => {
         setOpenModal(false);
     };
     const userLogOut = () => {
@@ -316,9 +321,9 @@ const MoodStatus = ({onClose}) => {
         { text: 'Library', icon: <LibraryMusicIcon />, onClick: () => navigate('/library'), disabled: isGuest },
         { text: 'Profile', icon: <AccountCircleIcon />, onClick: () => navigate('/profile'), disabled: isGuest },
     ];
-
+    const displayImage = uploadedImage ? uploadedImage : selectedImage;
     return (
-        <> <div style= {{overflowX:'hidden', overflowY:'hidden'}}>
+        <> <div style={{ overflowX: 'hidden', overflowY: 'hidden' }}>
             <AppBar position="static" sx={appBarStyle}>
                 <Toolbar>
                     <IconButton
@@ -347,7 +352,7 @@ const MoodStatus = ({onClose}) => {
                         onClose={handleClose}
                     >
                         <MenuItem onClick={userLogOut}>Logout</MenuItem>
-                       
+
                     </Menu>
                     <Typography variant="h6" sx={{ flexGrow: 1, color: '#b71c1c' }}>
                         MoodSphere
@@ -405,28 +410,11 @@ const MoodStatus = ({onClose}) => {
                                 </Typography>
                                 <Button
                                     startIcon={<CameraAltIcon sx={{ color: '#b71c1c' }} />}
-                                    onClick={handleOpenCamera}
                                     sx={{ color: 'white' }}
-                                    
+
                                 >
                                     Camera
                                 </Button>
-                                
-                                {/* Camera Modal */}
-                                    <Modal open={openCameraModal} onClose={handleCloseCamera}>
-                                        <div>
-                                            <CameraCapture onImageCapture={handleImageCapture} />
-                                        </div>
-                                    </Modal>
-
-                                    {/* Display Captured Image */}
-                                    {capturedImage && (
-                                        <div>
-                                            <Typography variant="subtitle1">Captured Image:</Typography>
-                                            <img src={capturedImage} alt="Captured" style={{ maxWidth: '100%', maxHeight: '300px' }} />
-                                        </div>
-                                    )}
-                                
                                 <><input
                                     type="file"
                                     ref={fileInputRef}
@@ -453,50 +441,46 @@ const MoodStatus = ({onClose}) => {
                                     open={openGallery}
                                     onClose={handleCloseGallery}
                                     userId={user?.uid}
-                                    //images={galleryImages}
-                                    images={images}
-                                    onImageClick={handleImageClick}
-                                    handleImageClick={handleImageClick}
-                                    // images={images} // Pass your gallery images array to the modal
-                                    // onSelectImage={handleImageClick} // Function to handle image selection
-                                    // db={db}
+                                    images={images} // Pass your gallery images array to the modal
+                                    onSelectImage={handleUseSelectedImage} // Function to handle image selection
+                                    db={db}
                                 />
-                                
-                                
-                                
+
+
+
                             </Paper>
                         </Fade>
                     </Modal>
                     <List>
-  {menuItems.map((item, index) => (
-    <Tooltip 
-      key={index} 
-      title={isGuest ? "This feature is not available for guest users." : ""}
-      placement="right"
-    >
-      <div> {/* Wrap the ListItem in a div because Tooltip children must be able to hold a ref */}
-        <ListItem 
-          button 
-          onClick={() => {
-            if (!isGuest) {
-              item.onClick();
-            }
-          }}
-          sx={{ 
-            '&:hover': { 
-              bgcolor: !isGuest ? '#757575' : 'transparent',
-            },
-            opacity: !isGuest ? 1 : 0.5,
-            pointerEvents: isGuest ? 'none' : 'auto',
-          }}
-        >
-          <ListItemIcon sx={{ color: 'white' }}>{item.icon}</ListItemIcon>
-          <ListItemText primary={item.text} />
-        </ListItem>
-      </div>
-    </Tooltip>
-  ))}
-</List>
+                        {menuItems.map((item, index) => (
+                            <Tooltip
+                                key={index}
+                                title={isGuest ? "This feature is not available for guest users." : ""}
+                                placement="right"
+                            >
+                                <div> {/* Wrap the ListItem in a div because Tooltip children must be able to hold a ref */}
+                                    <ListItem
+                                        button
+                                        onClick={() => {
+                                            if (!isGuest) {
+                                                item.onClick();
+                                            }
+                                        }}
+                                        sx={{
+                                            '&:hover': {
+                                                bgcolor: !isGuest ? '#757575' : 'transparent',
+                                            },
+                                            opacity: !isGuest ? 1 : 0.5,
+                                            pointerEvents: isGuest ? 'none' : 'auto',
+                                        }}
+                                    >
+                                        <ListItemIcon sx={{ color: 'white' }}>{item.icon}</ListItemIcon>
+                                        <ListItemText primary={item.text} />
+                                    </ListItem>
+                                </div>
+                            </Tooltip>
+                        ))}
+                    </List>
 
                     <Box mt="auto" py={2}>
                         <Divider sx={{ bgcolor: 'gray' }} />
@@ -515,7 +499,7 @@ const MoodStatus = ({onClose}) => {
                     </Box>
                 </Box>
                 <ToastContainer />
-               
+
                 <Box sx={{ position: 'relative', width: '100%' }}>
                     <Box
                         sx={{
@@ -529,33 +513,33 @@ const MoodStatus = ({onClose}) => {
                             backgroundColor: 'black', // Dark background
                         }}
                     >
-                    
-                    {/* Check for showInfoText to conditionally render the info text */}
-                    {showInfoText && (
-                        <Typography
-                            sx={{
-                                position: 'absolute',
-                                top: 70, // Adjust as needed for positioning
-                                left: '50%',
-                                transform: 'translateX(-50%)',
-                                width: '80%',
-                                textAlign: 'center',
-                                zIndex: 2,
-                                color: 'white',
-                                backgroundColor: 'rgba(0, 0, 0, 0.5)', // Semi-transparent black background
-                                padding: '100px',
-                                borderRadius: '5px',
-                                fontSize: '29px',
-                            }}
-                        >
-                            Please click on "Upload Image" and predict songs based on your mood.
-                        </Typography>
-                    )}
-                    
+
+                        {/* Check for showInfoText to conditionally render the info text */}
+                        {showInfoText && (
+                            <Typography
+                                sx={{
+                                    position: 'absolute',
+                                    top: 70, // Adjust as needed for positioning
+                                    left: '50%',
+                                    transform: 'translateX(-50%)',
+                                    width: '80%',
+                                    textAlign: 'center',
+                                    zIndex: 2,
+                                    color: 'white',
+                                    backgroundColor: 'rgba(0, 0, 0, 0.5)', // Semi-transparent black background
+                                    padding: '100px',
+                                    borderRadius: '5px',
+                                    fontSize: '29px',
+                                }}
+                            >
+                                Please click on "Upload Image" and predict songs based on your mood.
+                            </Typography>
+                        )}
+
                         <Button
                             startIcon={<CameraAltIcon />}
                             onClick={handleOpenModal}
-                            sx={{ backgroundColor: '#b71c1c', color: 'white', marginRight: '10px', marginTop: '20px' , zIndex: 3}}
+                            sx={{ backgroundColor: '#b71c1c', color: 'white', marginRight: '10px', marginTop: '20px', zIndex: 3 }}
                         >
                             Upload Your Image
                         </Button>
@@ -586,34 +570,34 @@ const MoodStatus = ({onClose}) => {
                             style={{ display: 'none' }}
                             onChange={handleFileUpload}
                         />
-                        {uploadedImage && (
+                        {displayImage && (
                             <div style={{ width: '100%', textAlign: 'center', zIndex: '2', paddingTop: '20px' }}>
                                 <img
                                     style={{
-                                    width: '250px', // Adjust based on your needs, ensuring it's square for a perfect circle
-                                    height: '250px', // Match width for square aspect ratio
-                                    objectFit: 'cover', // This will ensure the image covers the area, useful for non-square images
-                                    borderRadius: '50%', // This makes the image round
-                                    border: '1px solid white', // Optional: adds a white border around the circle
-                                    padding: '4px', // Optional: adds space between the image content and the border
-                                }}
-                                    src={uploadedImage}
+                                        width: '250px', // Adjust based on your needs, ensuring it's square for a perfect circle
+                                        height: '250px', // Match width for square aspect ratio
+                                        objectFit: 'cover', // This will ensure the image covers the area, useful for non-square images
+                                        borderRadius: '50%', // This makes the image round
+                                        border: '1px solid white', // Optional: adds a white border around the circle
+                                        padding: '4px', // Optional: adds space between the image content and the border
+                                    }}
+                                    src={displayImage}
                                     alt="Uploaded"
-                                    
+
                                 />
                                 <Button
                                     onClick={handleImageRemove}
-                                   
+
                                     sx={{ backgroundColor: '#b71c1c', color: 'white', marginTop: '20px', zIndex: 3 }}
-                                  
+
                                 >
-                               
+
                                     {/* <RemoveCircleIcon /> */}
                                     Remove
                                 </Button>
                             </div>
                         )}
-                        {uploadedImage && mood && (
+                        {displayImage && mood && (
                             <Box sx={{ width: '100%', textAlign: 'center', marginTop: '20px', zIndex: '2' }}> {/* Encapsulated in a Box for better control */}
                                 <Typography variant="h5">
                                     Mood: {mood}
@@ -621,7 +605,7 @@ const MoodStatus = ({onClose}) => {
                             </Box>
                         )}
                         {/* Recommended songs display */}
-                        {uploadedImage && predictedSongs && predictedSongs.length > 0 && (
+                        {displayImage && predictedSongs && predictedSongs.length > 0 && (
                             <Box sx={{
                                 display: 'flex',
                                 justifyContent: 'center',

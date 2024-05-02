@@ -1,5 +1,5 @@
-import React, { useRef, useState, useEffect } from 'react';
-import { Box, Button, List, ListItem, ListItemIcon, ListItemText, Typography, AppBar, Toolbar, CssBaseline, Link, Divider, useTheme, IconButton, Avatar, Menu, MenuItem, TextField, InputAdornment } from '@mui/material';
+import React, { useRef, useState } from 'react';
+import { Box, Button, List, ListItem, ListItemIcon, ListItemText, Typography, AppBar, Toolbar, CssBaseline, Link, Divider, useTheme, IconButton, Avatar, Menu, MenuItem, TextField, InputAdornment, useMediaQuery } from '@mui/material';
 import HomeIcon from '@mui/icons-material/Home';
 import MenuIcon from '@mui/icons-material/Menu';
 import SearchIcon from '@mui/icons-material/Search';
@@ -17,35 +17,10 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import FeaturedPlayListIcon from '@mui/icons-material/FeaturedPlayList';
 import Tooltip from '@mui/material/Tooltip';
-import { useAuth } from '../../userAuth/AuthProvider';import GalleryModal from './GalleryModal';
-import { getStorage } from 'firebase/storage';
-import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
-import CameraCapture from './CameraCapture';
+import { useAuth } from '../../userAuth/AuthProvider';
+import { AuthProvider } from '../../userAuth/AuthProvider';
 
-
-
-
-import { initializeApp } from 'firebase/app';
-import { getFirestore , collection, getDocs, addDoc } from 'firebase/firestore';
-
-
-
-// Your Firebase configuration
-const firebaseConfig = {
-  apiKey: "AIzaSyB51kbIHKtjhKdC9WLoHn1n5rva-6kdPiU",
-  authDomain: "moodsphere-dev-dynasty.firebaseapp.com",
-  projectId: "moodsphere-dev-dynasty",
-  storageBucket: "moodsphere-dev-dynasty.appspot.com",
-  messagingSenderId: "31582792465",
-  appId: "1:31582792465:web:ed7e040408bb81f4d4fab0",
-  measurementId: "G-WBHFGXF8FQ"
-};
-
-const firebaseApp = initializeApp(firebaseConfig);
-const db = getFirestore(firebaseApp);
-const storage = getStorage(firebaseApp);
-
-const MoodStatus = ({onClose}) => {
+const MoodStatus = () => {
     const navigate = useNavigate();
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [openModal, setOpenModal] = React.useState(false);
@@ -53,155 +28,25 @@ const MoodStatus = ({onClose}) => {
     const [mood, setMood] = useState(null);
     const [predictedSongs, setPredictedSongs] = useState([]);
     const [image, setImage] = useState(null);
-    const [images, setImages] = useState([]);
     const fileInputRef = useRef(null);
     const [showInfoText, setShowInfoText] = useState(true);
     const { user } = useAuth(); // Access the user object
     const isGuest = user?.isGuest; // Determine if the logged in user is a guest
-    const userId = user?.uid;
-    const [openGallery, setOpenGallery] = useState(false);
-    const [galleryImages, setGalleryImages] = useState([]);
-    const [openCameraModal, setOpenCameraModal] = useState(false);
-    const [capturedImage, setCapturedImage] = useState(null);
 
-
-    const handleOpenCamera = () => {
-        setOpenCameraModal(true);
-    };
-
-    const handleCloseCamera = () => {
-        setOpenCameraModal(false);
-    };
-
-    const handleImageCapture = (imageDataUrl) => {
-        setCapturedImage(imageDataUrl);
-        setOpenCameraModal(false); // Close camera modal after capturing image
-    };
-
-    const fetchImages = async () => {
-        if (!open) return;
-      
-        const userPicRef = collection(db, `userPic/${userId}/images`);
-      
-        try {
-          const snapshot = await getDocs(userPicRef);
-          const imageList = [];
-      
-          snapshot.forEach(async (doc) => {
-            const data = doc.data();
-            const fileName = data.fileName;
-            const imageUrl = data.imageUrl;
-      
-            if (imageUrl) {
-              try {
-                const downloadUrl = await getDownloadURL(ref(storage, imageUrl));
-                imageList.push({
-                  id: doc.id,
-                  fileName: fileName,
-                  downloadUrl: downloadUrl
-                });
-                setImages(imageList);
-              } catch (error) {
-                console.error(`Error getting download URL for ${fileName}:`, error);
-              }
-            }
-          });
-          setGalleryImages(imageList);
-        } catch (error) {
-          console.error('Error fetching images from Firestore:', error);
-        }
-      };
-      
-    
-    const handleOpenGallery = () => {
-        // Open the gallery modal
-        setOpenGallery(true);
-    
-        // Fetch images from Firestore when gallery is opened
-        fetchImages();
-      };
-
-
-    const handleCloseGallery = () => {
-        setOpenGallery(false);
-    };
-
-
-
-      
-  
-      const handleImageClick = async (imageUrl, event) => {
-        event.preventDefault(); // Prevent default behavior of click event
-        console.log('inside the handleImageCLICK: ', imageUrl);
-      
-        try {
-          const response = await fetch(imageUrl);
-          const blob = await response.blob();
-          const objectUrl = URL.createObjectURL(blob);
-      
-          const formData = new FormData();
-          formData.append('image', blob, 'image.jpg');
-      
-          setUploadedImage(objectUrl);
-          setImage(formData);
-          setShowInfoText(false);
-      
-          handleCloseModal();  // Close the modal after handling image click
-        } catch (error) {
-          console.error('Error handling image click:', error);
-        }
-      };
-
-    
-    const handleFileUpload = async (event) => {
+    const handleFileUpload = (event) => {
         const file = event.target.files[0];
-      
         if (file) {
-          try {
-            // Prepare a reference to the Firebase Storage bucket
-            const storageRef = ref(storage, `userPic/${user.uid}/images/${file.name}`);
-      
-            // Upload the file to Firebase Storage
-            await uploadBytes(storageRef, file);
-      
-            // Get the download URL of the uploaded image
-            const imageUrl = await getDownloadURL(storageRef);
-      
-            // Store image metadata (including URL) in Firestore
-            const imagesRef = collection(db, `userPic/${user.uid}/images`);
-            const docRef = await addDoc(imagesRef, {
-              fileName: file.name,
-              imageUrl: imageUrl
-            });
-      
-            // Set uploaded image preview
-            setUploadedImage(URL.createObjectURL(file));
-      
-            // Prepare FormData for fetch call (assuming you need this for another API call)
             const formData = new FormData();
             formData.append('image', file);
-      
-            // Set image FormData to state
-            setImage(formData);
-      
-            // Close modal and update UI
+            setUploadedImage(URL.createObjectURL(file));
+            setImage(formData); // formData is ready for the fetch call.
             handleCloseModal();
             setShowInfoText(false);
-      
-            // Display success message
-            toast.success('Image uploaded successfully to Firestore!');
-          } catch (error) {
-            console.error('Error uploading image to Firestore:', error);
-            toast.error('Failed to upload image to Firestore. Please try again.');
-          }
         } else {
-          // Handle case when no file is selected
-          setUploadedImage(null);
-          setImage(null);
+            setUploadedImage(null);
+            setImage(null);
         }
-      };
-
-
+    };
     const handleImageRemove = () => {
         setUploadedImage(null);
         setImage(null);
@@ -216,48 +61,11 @@ const MoodStatus = ({onClose}) => {
         setAnchorEl(null);
     };
     const handleOpenModal = () => {
-        // Check if the images collection exists and create it if necessary
-        const userId = user.uid;
-        const imagesRef = collection(db, 'userPic', userId, 'images');
-    
-        getDocs(imagesRef)
-            .then((snapshot) => {
-                if (snapshot.empty) {
-                    // Collection does not exist, create it
-                    return addDoc(imagesRef, {})
-                        .then(() => {
-                            // Show popup indicating collection was created
-                            toast.info("Images collection created successfully!", {
-                                position: "top-center",
-                                autoClose: 2000,
-                                hideProgressBar: false,
-                                closeOnClick: true,
-                                pauseOnHover: true,
-                                draggable: true,
-                                progress: undefined,
-                            });
-                        });
-                }
-            })
-            .catch((error) => {
-                console.error('Error checking images collection:', error);
-                // Show popup indicating error
-                toast.error("Error checking images collection. Please try again later.", {
-                    position: "top-center",
-                    autoClose: 2000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                });
-            });
-    
-        // Open the modal for uploading images
         setOpenModal(true);
+        
     };
 
-    const handleCloseModal = () => {            
+    const handleCloseModal = () => {
         setOpenModal(false);
     };
     const userLogOut = () => {
@@ -316,6 +124,9 @@ const MoodStatus = ({onClose}) => {
         { text: 'Library', icon: <LibraryMusicIcon />, onClick: () => navigate('/library'), disabled: isGuest },
         { text: 'Profile', icon: <AccountCircleIcon />, onClick: () => navigate('/profile'), disabled: isGuest },
     ];
+    const theme = useTheme();
+    const breakpoints = ["sm", "md", "lg", "xl"];
+    const matches = breakpoints.map((bp) => useMediaQuery(`(min-width:${theme.breakpoints.values[bp]}px)`));
 
     return (
         <> <div style= {{overflowX:'hidden', overflowY:'hidden'}}>
@@ -377,7 +188,11 @@ const MoodStatus = ({onClose}) => {
                         color: 'white',
                         overflowX: 'hidden',
                         borderRight: '1px solid #b71c1c',
+                        "@media (max-width:600px)": {
+                            width: 100, // Adjusted width for smaller screens
+                          }
                     }}>
+            
                     <Modal
                         aria-labelledby="transition-modal-title"
                         aria-describedby="transition-modal-description"
@@ -405,28 +220,11 @@ const MoodStatus = ({onClose}) => {
                                 </Typography>
                                 <Button
                                     startIcon={<CameraAltIcon sx={{ color: '#b71c1c' }} />}
-                                    onClick={handleOpenCamera}
                                     sx={{ color: 'white' }}
                                     
                                 >
                                     Camera
                                 </Button>
-                                
-                                {/* Camera Modal */}
-                                    <Modal open={openCameraModal} onClose={handleCloseCamera}>
-                                        <div>
-                                            <CameraCapture onImageCapture={handleImageCapture} />
-                                        </div>
-                                    </Modal>
-
-                                    {/* Display Captured Image */}
-                                    {capturedImage && (
-                                        <div>
-                                            <Typography variant="subtitle1">Captured Image:</Typography>
-                                            <img src={capturedImage} alt="Captured" style={{ maxWidth: '100%', maxHeight: '300px' }} />
-                                        </div>
-                                    )}
-                                
                                 <><input
                                     type="file"
                                     ref={fileInputRef}
@@ -441,63 +239,29 @@ const MoodStatus = ({onClose}) => {
                                 >
                                     Browse Files
                                 </Button>
-                                <Button
-                                    startIcon={<InsertDriveFileIcon sx={{ color: '#b71c1c' }} />}
-                                    onClick={handleOpenGallery} // Call the function to check and create the collection
-                                    sx={{ color: 'white' }}
-                                >
-                                    Upload from Saved Images
-                                </Button>
-                                {/* GalleryModal component */}
-                                <GalleryModal
-                                    open={openGallery}
-                                    onClose={handleCloseGallery}
-                                    userId={user?.uid}
-                                    //images={galleryImages}
-                                    images={images}
-                                    onImageClick={handleImageClick}
-                                    handleImageClick={handleImageClick}
-                                    // images={images} // Pass your gallery images array to the modal
-                                    // onSelectImage={handleImageClick} // Function to handle image selection
-                                    // db={db}
-                                />
-                                
-                                
-                                
                             </Paper>
                         </Fade>
                     </Modal>
+                    
                     <List>
-  {menuItems.map((item, index) => (
-    <Tooltip 
-      key={index} 
-      title={isGuest ? "This feature is not available for guest users." : ""}
-      placement="right"
-    >
-      <div> {/* Wrap the ListItem in a div because Tooltip children must be able to hold a ref */}
-        <ListItem 
-          button 
-          onClick={() => {
-            if (!isGuest) {
-              item.onClick();
-            }
-          }}
-          sx={{ 
-            '&:hover': { 
-              bgcolor: !isGuest ? '#757575' : 'transparent',
-            },
-            opacity: !isGuest ? 1 : 0.5,
-            pointerEvents: isGuest ? 'none' : 'auto',
-          }}
-        >
-          <ListItemIcon sx={{ color: 'white' }}>{item.icon}</ListItemIcon>
-          <ListItemText primary={item.text} />
-        </ListItem>
-      </div>
-    </Tooltip>
-  ))}
-</List>
-
+        {menuItems.map((item, index) => (
+          <ListItem
+            button
+            key={index}
+            onClick={item.onClick}
+            sx={{ "&:hover": { bgcolor: "#757575" } }}
+          >
+            {matches[0] ? (
+              <>
+                <ListItemIcon sx={{ color: "white" }}>{item.icon}</ListItemIcon>
+                <ListItemText primary={item.text} />
+              </>
+            ) : (
+              <IconButton sx={{ color: "white" }}>{item.icon}</IconButton>
+            )}
+          </ListItem>
+        ))}
+      </List>
                     <Box mt="auto" py={2}>
                         <Divider sx={{ bgcolor: 'gray' }} />
                         <List dense>
