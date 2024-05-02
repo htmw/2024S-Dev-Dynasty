@@ -24,7 +24,7 @@ model = load_model("./NewEpchModelSave.keras")
 class_names = ['Angry', 'Disgust', 'Fear', 'Happy', 'Neutral', 'Sad', 'Surprise']
 
 # Load your CSV data
-Music_Player = pd.read_csv("./app/static/Data/data_moods.csv")
+Music_Player = pd.read_csv("./app/static/data_moods.csv")
 # Adjust the path as necessary
 def get_all_songs():
     songs_ref = db.collection('tracks')  # 'tracks' is the Firestore collection name
@@ -123,7 +123,7 @@ def get_songs_by_genre(genre_name):
     songs_by_genre = Music_Player[Music_Player['genre'] == genre_name]
     if songs_by_genre.empty:
         return []
-    return songs_by_genre[['name', 'genre']].values.tolist()
+    return songs_by_genre.to_dict('records')
 
 
 #API for retrieving songs by genre ~Shane
