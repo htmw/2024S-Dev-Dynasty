@@ -129,7 +129,7 @@ const Genre = () => {
             </AppBar>
 
 
-            <div style={{ display: 'flex', height: '91.1vh', backgroundColor: '#121212' }}>
+            <div style={{ display: 'flex', flexDirection: 'row', height: '91.1vh', backgroundColor: '#121212' }}>
                 <CssBaseline />
                 <Box
                     sx={{
@@ -168,11 +168,11 @@ const Genre = () => {
                 </Box>
                 
                 {/* Width Added */}
-                <Box sx={{ display: 'flex', height: 'calc(100vh - 64px)', width: 'calc(63vh - 64px)'}}>
+                <Box sx={{ display: 'flex', height: 'calc(100vh - 64px)', width: 'calc(500vh - 64px)'}}>
                 <Box
                     sx={{
-                        width: '50%',
-                        overflowY: 'auto',
+                        width: '230px',
+                        overflowY: 'scroll',
                         bgcolor: '#121212',
                         color: 'white',
                         padding: '20px',
@@ -223,9 +223,9 @@ const Genre = () => {
                                 }
                             }}
                         />
-                    <List>
+                    <List sx={{ display: 'flex', flexDirection: 'column' }}>
                         {filteredGenres.map((genre, index) => (
-                            <ListItem 
+                            <ListItem
                                 key={index}
                                 sx={{ borderBottom: '1px solid #b71c1c', cursor: 'pointer' }}
                                 onClick={() => fetchGenreInfo(genre)}>
@@ -236,8 +236,8 @@ const Genre = () => {
                 </Box>
                 <Box
                     sx={{
-                        width: '50%',
-                        overflowY: 'auto',
+                        width: '1100px',
+                        overflowY: 'scroll',
                         bgcolor: '#333',
                         color: 'white',
                         paddingLeft: '20px',
@@ -245,9 +245,9 @@ const Genre = () => {
                     }}
                 >
                     
-                <Box sx={{ position: 'relative' }}>
-                    {loading && <CircularProgress sx={{ position: 'absolute', top: '50%', bottom: '100%', left: '50%', transform: 'translate(-90%, -90%)', color: "red", size: '80%', borderImageWidth: '90' }} />}
-                </Box>
+                    <Box sx={{ display: 'flex', justifyContent: 'center', alignContent: 'center', alignItems: 'center', mt: 2 }}>
+                        {loading && <CircularProgress color="error" size={100} thickness={3}/>}
+                    </Box>
                     <RecommendedSongs recommendedSongs={predictedSongs} />
                 </Box>
             </Box>
