@@ -41,7 +41,7 @@ const Genre = () => {
     const fetchGenreInfo = async (genreName) => {
         setLoading(true); // Set loading state to true before API call
         try {
-            const response = await fetch('http://localhost:5000/songs-by-genre', {
+            const response = await fetch('https://msdev-cewl7upn6q-uc.a.run.app/songs-by-genre', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
