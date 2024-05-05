@@ -55,7 +55,7 @@ const Library = () => {
         setLoading(true);
         setSearchClicked(true);
         try {
-            const response = await axios.post('http://localhost:5000/search', { query: searchQuery });
+            const response = await axios.post('https://msdev-cewl7upn6q-uc.a.run.app/search', { query: searchQuery });
             const data = response.data;
             if (data.matches && Array.isArray(data.matches)) {
                 setSearchResults(data.matches);
