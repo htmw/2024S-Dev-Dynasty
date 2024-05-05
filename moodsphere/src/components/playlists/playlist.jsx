@@ -88,7 +88,7 @@ function Playlist() {
     }, [user]);
 
     const fetchPlaylists = () => {
-        const url = `http://127.0.0.1:5000/get-playlist?user_id=${encodeURIComponent(user.uid)}`;
+        const url = `https://msdev-cewl7upn6q-uc.a.run.app/get-playlist?user_id=${encodeURIComponent(user.uid)}`;
         fetch(url, {
             method: 'GET',
             headers: { 'Content-Type': 'application/json' }
@@ -115,7 +115,7 @@ function Playlist() {
     };
 
     const deletePlaylist = (playlistId) => {
-        const url = `http://127.0.0.1:5000/delete-playlist?user_id=${encodeURIComponent(user.uid)}&playlist_id=${encodeURIComponent(playlistId)}`;
+        const url = `https://msdev-cewl7upn6q-uc.a.run.app/delete-playlist?user_id=${encodeURIComponent(user.uid)}&playlist_id=${encodeURIComponent(playlistId)}`;
         fetch(url, {
             method: 'DELETE'
         })
@@ -128,7 +128,7 @@ function Playlist() {
     };
 
     const removeSongFromPlaylist = (playlistId, songKey) => {
-        const url = `http://127.0.0.1:5000/remove-song-from-playlist?user_id=${encodeURIComponent(user.uid)}&playlist_id=${encodeURIComponent(playlistId)}&song_key=${encodeURIComponent(songKey)}`;
+        const url = `https://msdev-cewl7upn6q-uc.a.run.app/remove-song-from-playlist?user_id=${encodeURIComponent(user.uid)}&playlist_id=${encodeURIComponent(playlistId)}&song_key=${encodeURIComponent(songKey)}`;
         const updatedPlaylists = playlists.map(playlist => {
             if (playlist.playlist_id === playlistId) {
                 // Filter out the song to be deleted

@@ -33,7 +33,7 @@ const PlaylistModal = ({ open, onClose, onAddToPlaylist, onCreateNewPlaylist, so
   const fetchPlaylists = () => {
     if (!user) return;
 
-    const url = `http://127.0.0.1:5000/get-playlist?user_id=${encodeURIComponent(user.uid)}`;
+    const url = `https://msdev-cewl7upn6q-uc.a.run.app/get-playlist?user_id=${encodeURIComponent(user.uid)}`;
 
     fetch(url, {
         method: 'GET',
@@ -59,7 +59,7 @@ const PlaylistModal = ({ open, onClose, onAddToPlaylist, onCreateNewPlaylist, so
 const handleAddToPlaylist = (playlistId) => {
     const addSongData = { song_id: songData.id, ...songData };  // Adjust according to your song data structure
 
-    fetch('http://127.0.0.1:5000/add-song-to-playlist', {
+    fetch('https://msdev-cewl7upn6q-uc.a.run.app/add-song-to-playlist', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -93,7 +93,7 @@ const handleAddToPlaylist = (playlistId) => {
             songs: [songData]  // This can be an array of songs if adding multiple
         };
 
-        fetch('http://127.0.0.1:5000/create-playlist', {
+        fetch('https://msdev-cewl7upn6q-uc.a.run.app/create-playlist', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

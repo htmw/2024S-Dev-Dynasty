@@ -5,7 +5,6 @@ import { Box, Button, List, ListItem, ListItemIcon, ListItemText,
 import HomeIcon from '@mui/icons-material/Home';
 import { CircularProgress } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
-import SearchIcon from '@mui/icons-material/Search';
 import LibraryMusicIcon from '@mui/icons-material/LibraryMusic';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import EmojiEmotionsIcon from '@mui/icons-material/EmojiEmotions';
@@ -43,7 +42,7 @@ const firebaseApp = initializeApp(firebaseConfig);
 const db = getFirestore(firebaseApp);
 const storage = getStorage(firebaseApp);
 
-const MoodStatus = ({ onClose }) => {
+const MoodStatus = () => {
     const navigate = useNavigate();
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [openModal, setOpenModal] = React.useState(false);
@@ -54,27 +53,27 @@ const MoodStatus = ({ onClose }) => {
     const [image, setImage] = useState(null);
     const [images, setImages] = useState([]);
     const [loading, setLoading] = useState(false); // Added: State for loading indicator
-
     const fileInputRef = useRef(null);
     const [showInfoText, setShowInfoText] = useState(true);
     const { user } = useAuth(); // Access the user object
     const isGuest = user?.isGuest; // Determine if the logged in user is a guest
     const [reportText, setReportText] = useState(""); // State to store the report text
     const [openGallery, setOpenGallery] = useState(false);
-    const [galleryImages, setGalleryImages] = useState([]);
     const [openCameraModal, setOpenCameraModal] = useState(false);
     const [capturedImage, setCapturedImage] = useState(null);
-    const handleOpenCamera = () => {
+    const [galleryImages, setGalleryImages] = useState([]);
+    const handleOpenCameraModal = () => {
         setOpenCameraModal(true);
     };
-
-    const handleCloseCamera = () => {
+    const handleCloseCameraModal = () => {
         setOpenCameraModal(false);
     };
 
     const handleImageCapture = (imageDataUrl) => {
         setCapturedImage(imageDataUrl);
-        setOpenCameraModal(false); // Close camera modal after capturing image
+        setOpenCameraModal(false);
+        handleCloseModal();
+        handleImageClick(imageDataUrl)
     };
 
     const fetchImages = async () => {
@@ -125,9 +124,8 @@ const MoodStatus = ({ onClose }) => {
 
 
     const handleImageClick = async (imageUrl, event) => {
-        event.preventDefault(); // Prevent default behavior of click event
+        if(event) event.preventDefault(); // Prevent default behavior of click event
         console.log('inside the handleImageCLICK: ', imageUrl);
-
         try {
             const response = await fetch(imageUrl);
             const blob = await response.blob();
@@ -146,10 +144,8 @@ const MoodStatus = ({ onClose }) => {
         }
     };
 
-
     const handleFileUpload = async (event) => {
         const file = event.target.files[0];
-
         if (file) {
             try {
                 // Prepare a reference to the Firebase Storage bucket
@@ -170,10 +166,10 @@ const MoodStatus = ({ onClose }) => {
 
                 // Set uploaded image preview
                 setUploadedImage(URL.createObjectURL(file));
-
                 // Prepare FormData for fetch call (assuming you need this for another API call)
                 const formData = new FormData();
                 formData.append('image', file);
+                console.log("file->",file)
 
                 // Set image FormData to state
                 setImage(formData);
@@ -213,8 +209,8 @@ const MoodStatus = ({ onClose }) => {
     };
     const handleReportOpenModal = () => {
         setOpenModal(true);
-      };
-      const handleReportSubmit = () => {
+    };
+    const handleReportSubmit = () => {
         // You can implement report submission here
         console.log("Report submitted:", reportText);
         handleReportCloseModal();
@@ -272,7 +268,6 @@ const MoodStatus = ({ onClose }) => {
     }
 
     const predictSongs = async () => {
-        console.log(uploadedImage)
         if (!image) {
             console.error('Please upload an image first.');
             toast.error("Please Upload Your Image", {
@@ -290,7 +285,7 @@ const MoodStatus = ({ onClose }) => {
         try {
             console.log("image->>", image)
             setLoading(true)
-            const response = await fetch('http://127.0.0.1:5000/predict', {
+            const response = await fetch('https://msdev-cewl7upn6q-uc.a.run.app/predict', {
                 method: 'POST',
                 body: image,
             });
@@ -448,28 +443,12 @@ const MoodStatus = ({ onClose }) => {
                                 </Typography>
                                 <Button
                                     startIcon={<CameraAltIcon sx={{ color: '#b71c1c' }} />}
-                                    onClick={handleOpenCamera}
+                                    onClick={handleOpenCameraModal}
                                     sx={{ color: 'white' }}
 
                                 >
                                     Camera
                                 </Button>
-
-                                {/* Camera Modal */}
-                                <Modal open={openCameraModal} onClose={handleCloseCamera}>
-                                    <div>
-                                        <CameraCapture onImageCapture={handleImageCapture} />
-                                    </div>
-                                </Modal>
-
-                                {/* Display Captured Image */}
-                                {capturedImage && (
-                                    <div>
-                                        <Typography variant="subtitle1">Captured Image:</Typography>
-                                        <img src={capturedImage} alt="Captured" style={{ maxWidth: '100%', maxHeight: '300px' }} />
-                                    </div>
-                                )}
-
                                 <><input
                                     type="file"
                                     ref={fileInputRef}
@@ -496,21 +475,19 @@ const MoodStatus = ({ onClose }) => {
                                     open={openGallery}
                                     onClose={handleCloseGallery}
                                     userId={user?.uid}
-                                    //images={galleryImages}
+    
                                     images={images}
                                     onImageClick={handleImageClick}
                                     handleImageClick={handleImageClick}
-                                // images={images} // Pass your gallery images array to the modal
-                                // onSelectImage={handleImageClick} // Function to handle image selection
-                                // db={db}
                                 />
-
-
-
                             </Paper>
                         </Fade>
                     </Modal>
-
+                    {openCameraModal && <CameraCapture
+                        open={openCameraModal}
+                        onClose={handleCloseCameraModal}
+                        onImageCapture={handleImageCapture}
+                    />}
                     <List>
                         {menuItems.map((item, index) => (
                             <ListItem
@@ -609,7 +586,6 @@ const MoodStatus = ({ onClose }) => {
                             justifyContent: 'flex-start', // Changed to flex-start to align items from the top
                             height: '100%',
                             color: 'white',
-                            // paddingTop: '100px', // Increased padding to account for buttons
                         }}
                     >
                         <input
@@ -631,21 +607,17 @@ const MoodStatus = ({ onClose }) => {
                                     }}
                                     src={uploadedImage}
                                     alt="Uploaded"
-
                                 />
                                 <Button
                                     onClick={handleImageRemove}
 
                                     sx={{ backgroundColor: '#b71c1c', color: 'white', marginTop: '20px', zIndex: 3 }}
-
                                 >
-
-                                    {/* <RemoveCircleIcon /> */}
                                     Remove
                                 </Button>
                             </div>
                         )}
-                        {/* Added Circular Progress Indicator for Predict API */} <Box sx={{ display: 'flex', justifyContent: 'center', alignContent: 'center', alignItems: 'center', mt: 2 }}> {loading && <CircularProgress color="error" size={100} thickness={3} />} </Box>
+                        <Box sx={{ display: 'flex', justifyContent: 'center', alignContent: 'center', alignItems: 'center', mt: 2 }}> {loading && <CircularProgress color="error" size={100} thickness={3} />} </Box>
                         {uploadedImage && mood && (
                             <Box sx={{ width: '100%', textAlign: 'center', marginTop: '20px', zIndex: '2' }}> {/* Encapsulated in a Box for better control */}
                                 <Typography variant="h5">
