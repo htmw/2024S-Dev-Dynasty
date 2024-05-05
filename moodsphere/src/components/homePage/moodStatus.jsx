@@ -77,8 +77,7 @@ const MoodStatus = () => {
     };
 
     const fetchImages = async () => {
-        if (!open) return;
-
+        if (!open || user.displayName.isGuest) return;
         const userPicRef = collection(db, `userPic/${user.uid}/images`);
 
         try {
@@ -125,7 +124,6 @@ const MoodStatus = () => {
 
     const handleImageClick = async (imageUrl, event) => {
         if(event) event.preventDefault(); // Prevent default behavior of click event
-        console.log('inside the handleImageCLICK: ', imageUrl);
         try {
             const response = await fetch(imageUrl);
             const blob = await response.blob();
@@ -169,8 +167,6 @@ const MoodStatus = () => {
                 // Prepare FormData for fetch call (assuming you need this for another API call)
                 const formData = new FormData();
                 formData.append('image', file);
-                console.log("file->",file)
-
                 // Set image FormData to state
                 setImage(formData);
 
@@ -212,47 +208,49 @@ const MoodStatus = () => {
     };
     const handleReportSubmit = () => {
         // You can implement report submission here
-        console.log("Report submitted:", reportText);
         handleReportCloseModal();
     };
     const handleOpenModal = () => {
         // Check if the images collection exists and create it if necessary
-        console.log("user->>", user)
         const userId = user.uid;
-        const imagesRef = collection(db, 'userPic', user.uid, 'images');
+        if (!userId) {
+            setOpenModal(true);
+            return;
+        }
+            const imagesRef = collection(db, 'userPic', user.uid, 'images');
 
-        getDocs(imagesRef)
-            .then((snapshot) => {
-                if (snapshot.empty) {
-                    // Collection does not exist, create it
-                    return addDoc(imagesRef, {})
-                        .then(() => {
-                            // Show popup indicating collection was created
-                            toast.info("Images collection created successfully!", {
-                                position: "top-center",
-                                autoClose: 2000,
-                                hideProgressBar: false,
-                                closeOnClick: true,
-                                pauseOnHover: true,
-                                draggable: true,
-                                progress: undefined,
+            getDocs(imagesRef)
+                .then((snapshot) => {
+                    if (snapshot.empty) {
+                        // Collection does not exist, create it
+                        return addDoc(imagesRef, {})
+                            .then(() => {
+                                // Show popup indicating collection was created
+                                toast.info("Images collection created successfully!", {
+                                    position: "top-center",
+                                    autoClose: 2000,
+                                    hideProgressBar: false,
+                                    closeOnClick: true,
+                                    pauseOnHover: true,
+                                    draggable: true,
+                                    progress: undefined,
+                                });
                             });
-                        });
-                }
-            })
-            .catch((error) => {
-                console.error('Error checking images collection:', error);
-                // Show popup indicating error
-                toast.error("Error checking images collection. Please try again later.", {
-                    position: "top-center",
-                    autoClose: 2000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
+                    }
+                })
+                .catch((error) => {
+                    console.error('Error checking images collection:', error);
+                    // Show popup indicating error
+                    toast.error("Error checking images collection. Please try again later.", {
+                        position: "top-center",
+                        autoClose: 2000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                    });
                 });
-            });
 
         // Open the modal for uploading images
         setOpenModal(true);
@@ -283,7 +281,6 @@ const MoodStatus = () => {
         }
 
         try {
-            console.log("image->>", image)
             setLoading(true)
             const response = await fetch('https://msdev-cewl7upn6q-uc.a.run.app/predict', {
                 method: 'POST',
@@ -295,8 +292,6 @@ const MoodStatus = () => {
             }
 
             const data = await response.json();
-            console.log('Prediction:', data.prediction);
-            console.log('Recommended Songs:', data.recommended_songs);
 
             setMood(data.prediction);
             setPredictedSongs(data.recommended_songs);
