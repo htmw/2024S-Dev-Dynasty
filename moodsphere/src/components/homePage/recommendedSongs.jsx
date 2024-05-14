@@ -146,7 +146,7 @@ const RecommendedSongs = ({ recommendedSongs }) => {
                 size="large"
                 aria-label="youtube"
                 component={Link}
-                href={song.youtube}
+                href={song.YOUTUBE}
                 target="_blank"
                 color="error"
               >
