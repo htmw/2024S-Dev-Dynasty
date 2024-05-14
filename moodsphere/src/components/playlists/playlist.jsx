@@ -335,7 +335,7 @@ function Playlist() {
                                                 <IconButton component={Link} href={song.spotify} target="_blank">
                                                     <SpotifyIcon />
                                                 </IconButton>
-                                                <IconButton component={Link} href={song.youtube} target="_blank" color="error">
+                                                <IconButton component={Link} href={song.YOUTUBE} target="_blank" color="error">
                                                     <YouTubeIcon />
                                                 </IconButton>
                                                 <IconButton
