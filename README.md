@@ -1,6 +1,53 @@
 # Dev Dynasty - Pace University Capstone Project
 
 # Project Overview:
-The Moodsphere project aims to enhance the music recommendation experience by incorporating user emotions as a key factor in suggesting personalized playlists. Unlike traditional music recommenders who often rely on static factors like genres and artists, this project goes a step further by dynamically adjusting recommendations based on the users current emotional state. The goal is to curate playlists that resonate with the users feelings at a given moment, creating a more engaging and relevant music experience. Using emotion analysis techniques, this project determines the users present emotional state and suggests music that reflects those feelings. This user-centric strategy aims to produce a more engaging and customized music recommendation experience.
+The Moodsphere project enhances music recommendations by factoring in users' emotions to create personalized playlists. Unlike traditional recommenders based on genres or artists, it adjusts suggestions based on users' current emotional states. By analyzing emotions, the system curates playlists that align with users' feelings at any moment, offering a more engaging experience. User profiles store emotional data and music preferences, allowing the system to adapt over time, improving the accuracy of recommendations. Ultimately, the project aims to revolutionize music discovery by combining emotion analysis with adaptive machine learning for a more personalized, emotionally resonant experience.
 
-The system maintains user profiles that store historical emotional data and music preferences. By continuously learning from user interactions and feedback, the recommender adapts and enhances its understanding of the users evolving emotional states over time. This adaptive user profiling ensures that recommendations become progressively accurate and aligned with the users preferences. The Emotion-Based Music Recommender project seeks to revolutionize music recommendations by recognizing and responding to the dynamic nature of human emotions. By combining advanced emotion analysis techniques with adaptive machine learning models and user-centric design, the project aims to deliver a personalized and emotionally resonant music discovery experience for each user.
+# 🎵 MoodSphere – Emotion-Based Music Recommendation System
+
+**Capstone Project | Pace University – Seidenberg School of CSIS**  
+**Team Dev Dynasty | Class of 2024 | New York City**
+
+---
+
+## 📌 Overview
+
+**MoodSphere** reimagines music recommendation by using your real-time **emotional state** to suggest songs that truly resonate. Unlike traditional systems that rely only on genre or artist, MoodSphere uses **AI-powered emotion detection** to personalize playlists based on how the user feels in the moment.
+
+> Upload a selfie → Predict mood using CNN → Recommend music from Firebase → Curate by artist, genre, or emotion.
+
+---
+
+## 🚀 Features
+
+- 🎭 **Real-time Emotion Prediction** (via CNN model and image upload)
+- 🔍 **Search by Genre, Artist, or Mood**
+- 🔁 **Firebase Integration** to fetch curated playlists
+- 🧠 **User History Aware** (backend-ready for profile-based learning)
+- ☁️ **Built with Flask, React (Vite), TensorFlow, and Firebase**
+
+---
+
+## 🛠 Tech Stack
+
+| Frontend   | Backend    | AI/ML        | Cloud & Infra       |
+|------------|------------|--------------|----------------------|
+| React + Vite | Flask (Python) | TensorFlow + Keras | Firebase, Google Cloud Run, Docker-ready |
+
+---
+
+## 💻 Local Setup
+
+> You can run the project locally on `localhost:5173` (React) and `localhost:5000` (Flask)
+
+### Prerequisites
+
+- Node.js + npm
+- Python 3.10+
+- Git
+
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/htmw/2024S-Dev-Dynasty.git
+cd 2024S-Dev-Dynasty
